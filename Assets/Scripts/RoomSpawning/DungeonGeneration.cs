@@ -66,7 +66,7 @@ public class DungeonGeneration : MonoBehaviour
             }
         }
 
-        bool splitHorizontally = Random.Range(0, 2) != 0;
+        bool splitHorizontally = cursor.height > cursor.width;
         float newSectionWidth = 0, newSectionHeight = 0;
         if (splitHorizontally)
         {
