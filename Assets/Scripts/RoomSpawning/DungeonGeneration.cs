@@ -11,11 +11,18 @@ public class DungeonGeneration : MonoBehaviour
 
     List<Section> sections = new List<Section>();
 
+    [SerializeField] GameObject roomPrefab;
+    [SerializeField] int maxRoomSize;
+    [SerializeField] int minRoomSize;
+    [SerializeField] int roomGap;
+
     private void Start()
     {
-        Generate();
+        GenerateSections();
+
+        GenerateRooms();
     }
-    void Generate()
+    void GenerateSections()
     {
         Section initialSection = new Section(transform.position, mapWidth, mapHeight);
         sectionHead = initialSection;
@@ -23,22 +30,10 @@ public class DungeonGeneration : MonoBehaviour
         // Create Sections by cutting in half to a certain amount
         for (int i = 0; i < maxRoomCount; i++)
         {
-            Split();
-        }
-
-        foreach (var section in sections)
-        {
-            GameObject visual = new GameObject($"{section.position}, {section.width}x{section.height}");
-            SpriteRenderer spriteRenderer = visual.AddComponent<SpriteRenderer>();
-            Sprite sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(Vector2.zero, Vector2.one), Vector2.zero, 1);
-
-            spriteRenderer.sprite = sprite;
-            spriteRenderer.color = Random.ColorHSV();
-            visual.transform.localScale = new Vector2(section.width, section.height);
-            visual.transform.localPosition = section.position;
+            SplitSection();
         }
     }
-    void Split()
+    void SplitSection()
     {
         // Go through randomly until we come to an end
         Section cursor = sectionHead;
@@ -108,5 +103,67 @@ public class DungeonGeneration : MonoBehaviour
         }
 
         sections.Remove(cursor);
+    }
+    void GenerateRooms()
+    {
+        // Go through each section
+        foreach (var section in sections)
+        {
+            // Check if the room is big enough for a room
+            if (section.width < (minRoomSize + roomGap) || section.height < (minRoomSize + roomGap))
+            {
+                Debug.Log($"{section} is to small for a room");
+                continue; // Its to small for a room
+            }
+
+            // Calculate the bounds for positioning the rooms
+            float x1, y1, x2, y2;
+
+            // Top right corner
+            x1 = section.position.x + section.width - minRoomSize;
+            y1 = section.position.y + section.height - minRoomSize;
+            Vector2 topLeft = new Vector2 (x1, y1);
+
+            // Bottom left corner
+            x2 = section.position.x + minRoomSize;
+            y2 = section.position.y + minRoomSize;
+            Vector2 bottomRight = new Vector2 (x2, y2);
+
+            // Genreate Random Pos
+            Vector2 roomPos = new Vector2(
+                Random.Range(topLeft.x, bottomRight.x),
+                Random.Range(topLeft.y, bottomRight.y)
+            );
+
+            // Set size so it doesn't overlap
+            float roomWidth = Mathf.Min(
+                Mathf.Abs(roomPos.x - section.position.x - roomGap),                     // Distance from left
+                Mathf.Abs((section.position.x + section.width - roomGap) - roomPos.x),   // Distance from right
+                Mathf.Abs(maxRoomSize)                                         // Max room size
+            );
+            float roomHeight = Mathf.Min(
+                Mathf.Abs(roomPos.y - section.position.y - roomGap),                     // Distance from top
+                Mathf.Abs((section.position.y + section.height - roomGap) - roomPos.y),  // Distance from bottom
+                Mathf.Abs(maxRoomSize)                                         // Max room size
+            );
+            // Adjust so it can be used for scale
+            roomWidth *= 2;
+            roomHeight *= 2;
+
+            if (roomWidth < minRoomSize || roomHeight < minRoomSize)
+            {
+                Debug.Log($"{section} is to small for a room");
+                continue;
+            }
+
+            // Create the room in the position
+            GameObject room = Instantiate(roomPrefab, roomPos, Quaternion.identity);
+            room.name = ($"{roomPos}, ({roomWidth}x{roomHeight})");
+
+            SpriteRenderer spriteRenderer = room.GetComponent<SpriteRenderer>();
+
+            room.transform.localScale = new Vector2(roomWidth, roomHeight);
+        }
+
     }
 }

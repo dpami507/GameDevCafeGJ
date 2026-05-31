@@ -369,9 +369,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb4e992f752dcae428023a3a4490b20b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  mapWidth: 25
-  mapHeight: 25
-  maxRoomCount: 10
+  mapWidth: 100
+  mapHeight: 100
+  maxRoomCount: 30
+  roomPrefab: {fileID: 5601540619521592518, guid: da5ad7fa7e07c074d864ecc9771c4dda, type: 3}
+  maxRoomSize: 5
+  minRoomSize: 2
+  roomGap: 1
 --- !u!4 &1363058823
 Transform:
   m_ObjectHideFlags: 0

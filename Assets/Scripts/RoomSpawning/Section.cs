@@ -14,8 +14,6 @@ public class Section
         this.position = position;
         this.width = width;
         this.height = height;
-
-        Debug.Log($"{position}, {width}, {height}");
     }
     public void SetChildSection(int index, Section section)
     {
