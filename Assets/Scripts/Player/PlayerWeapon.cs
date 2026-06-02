@@ -54,12 +54,9 @@ public class PlayerWeapon : MonoBehaviour
         Quaternion bulletDir = Quaternion.Euler(0, 0, angle + randSpread);
 
         // Spawn Bullets
-        GameObject _bullet = Instantiate(bullet, muzzle.position, bulletDir);
-        Rigidbody2D _bulletRB = _bullet.GetComponent<Rigidbody2D>();
-        _bulletRB.linearVelocity = _bullet.transform.right * bulletVelocity;
-
-        // Kill after 5 seconds
-        Destroy(_bullet, 5f);
+        GameObject _bulletGO = Instantiate(bullet, muzzle.position, bulletDir);
+        Bullet _bullet = _bulletGO.GetComponent<Bullet>();
+        _bullet.StartBullet(bulletVelocity);
     }
     void Look()
     {
