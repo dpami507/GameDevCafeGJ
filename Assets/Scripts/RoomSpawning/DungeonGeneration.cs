@@ -1,26 +1,59 @@
+using NUnit.Framework.Internal;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 public class DungeonGeneration : MonoBehaviour
 {
-    [SerializeField] int mapWidth, mapHeight;
+    [Header("Map Size")]
+    [SerializeField] int mapWidth;
+    [SerializeField] int mapHeight;
     [SerializeField] int maxRoomCount;
 
     Section sectionHead;
 
+    // Sections split from the Binary Space Partitioning
     List<Section> sections = new List<Section>();
+    // Rooms generated inside the sections
+    List<Room> rooms = new List<Room>();
+    // Triangles generated from the Delaunay Triangulation
+    List<Triangle> triangles = new List<Triangle>();
+    // Room edges MST
+    List<Edge> roomEdges = new List<Edge>();
 
+    [Header("Room Settings")]
     [SerializeField] GameObject roomPrefab;
     [SerializeField] int maxRoomSize;
     [SerializeField] int minRoomSize;
     [SerializeField] int roomGap;
+
+    [Header("Corridor Settings")]
+    [SerializeField] GameObject corridorPrefab;
+    [SerializeField] float corridorWidth;
+
+    [Header("Tilemaps")]
+    public Tilemap floorTilemap;
+    public Tilemap wallTilemap;
+
+    [Header("Tiles")]
+    public TileBase floorTile;
+    public RuleTile wallRuleTile;
 
     private void Start()
     {
         GenerateSections();
 
         GenerateRooms();
+
+        DelaunayTriangulation();
+
+        GeneratePaths();
+
+        GenerateTilemap();
     }
     void GenerateSections()
     {
@@ -156,14 +189,281 @@ public class DungeonGeneration : MonoBehaviour
                 continue;
             }
 
-            // Create the room in the position
-            GameObject room = Instantiate(roomPrefab, roomPos, Quaternion.identity);
-            room.name = ($"{roomPos}, ({roomWidth}x{roomHeight})");
+            // Create Room Class
+            Room newRoom = new Room(roomPos, roomWidth, roomHeight);
+            rooms.Add(newRoom);
+        }
+    }
+    void DelaunayTriangulation()
+    {
+        // Create the SUPER TRIANGLE
+        Vector2 center = new Vector2(mapWidth / 2f, mapHeight / 2f);
+        float size = Mathf.Max(mapWidth, mapHeight) * 10f;
 
-            SpriteRenderer spriteRenderer = room.GetComponent<SpriteRenderer>();
+        Vector2 p1 = new Vector2(center.x - size, center.y - size);
+        Vector2 p2 = new Vector2(center.x, center.y + size);
+        Vector2 p3 = new Vector2(center.x + size, center.y - size);
+        Triangle superTriangle = new Triangle(p1, p2, p3);
 
-            room.transform.localScale = new Vector2(roomWidth, roomHeight);
+        triangles.Add(superTriangle);
+
+        // Go through each room center and split all triangles that land its its circumcircle
+        foreach (var room in rooms)
+        {
+            if (!superTriangle.pointInCircumcircle(room.position))
+                Debug.LogWarning($"Room at {room.position} is OUTSIDE the super triangle!");
+
+            List<Triangle> badTriangles = new List<Triangle>();
+            foreach (var triangle in triangles)
+            {
+                if (triangle.pointInCircumcircle(room.position))
+                {
+                    badTriangles.Add(triangle);
+                }
+            }
+
+            List<Edge> polygon = new List<Edge>();
+            foreach (var triangle in badTriangles)
+            {
+                // Create the triangle from edges
+                Edge[] edges = new Edge[]
+                {
+                    new Edge(triangle.p1, triangle.p2),
+                    new Edge(triangle.p2, triangle.p3),
+                    new Edge(triangle.p3, triangle.p1)
+                };
+                // Go through each edge and see if it is shared by the bad triangles
+                foreach (var edge in edges)
+                {
+                    bool shared = badTriangles.Any(other =>
+                        other != triangle && other.hasEdge(edge.p1, edge.p2));
+
+                    if(!shared)
+                    {
+                        polygon.Add(edge);
+                    }
+                }
+            }
+
+            // remove the bad triangles
+            foreach (var badTriangle in badTriangles)
+            {
+                triangles.Remove(badTriangle);
+            }
+
+            // Re triangulate the new triangles using the polygon
+            foreach (var edge in polygon)
+            {
+                triangles.Add(new Triangle(room.position, edge.p1, edge.p2));
+            }
         }
 
+        triangles.RemoveAll(t =>
+            t.hasVertex(p1) || t.hasVertex(p2) || t.hasVertex(p3));
+    }
+    void GeneratePaths()
+    {
+        HashSet<Edge> edges = new HashSet<Edge>();
+        HashSet<Vector2> connectedNodes = new HashSet<Vector2>();
+
+        // Populate edges list
+        foreach(var triangle in triangles)
+        {
+            // Add the edges
+            edges.Add(new Edge(triangle.p1, triangle.p2));
+            edges.Add(new Edge(triangle.p2, triangle.p3));
+            edges.Add(new Edge(triangle.p3, triangle.p1));
+        }
+
+        // Sort by length
+        List<Edge> sortedEdges = edges.OrderBy(e => e.GetLength()).ToList();
+
+        // Add first edge
+        connectedNodes.Add(sortedEdges[0].p1);
+        connectedNodes.Add(sortedEdges[0].p2);
+        roomEdges.Add(sortedEdges[0]);
+        sortedEdges.RemoveAt(0);
+
+        // Get a path
+        while (sortedEdges.Count > 0)
+        {
+            Edge best = null;
+            int bestIndex = -1;
+
+            for (int i = 0; i < sortedEdges.Count; i++)
+            {
+                Edge edge = sortedEdges[i];
+
+                bool hasP1 = connectedNodes.Contains(edge.p1);
+                bool hasP2 = connectedNodes.Contains(edge.p2);
+
+                if (hasP1 ^ hasP2)
+                {
+                    best = edge;
+                    bestIndex = i;
+                    break;
+                }
+            }
+
+            if (best == null) break;
+
+            connectedNodes.Add(best.p1);
+            connectedNodes.Add(best.p2);
+            roomEdges.Add(best);
+            sortedEdges.RemoveAt(bestIndex);
+        }
+    }
+    void GenerateTilemap()
+    {
+        floorTilemap.ClearAllTiles();
+        wallTilemap.ClearAllTiles();
+
+        // Paint rooms
+        foreach (var room in rooms)
+            PaintRoom(room);
+
+        // Paint corridors
+        foreach (var edge in roomEdges)
+            PaintCorridor(edge);
+
+        // Paint walls around all floor tiles
+        PaintWalls();
+    }
+    void PaintRoom(Room room)
+    {
+        int xMin = Mathf.RoundToInt(room.position.x - room.width / 2f);
+        int xMax = Mathf.RoundToInt(room.position.x + room.width / 2f);
+        int yMin = Mathf.RoundToInt(room.position.y - room.height / 2f);
+        int yMax = Mathf.RoundToInt(room.position.y + room.height / 2f);
+
+        for (int x = xMin; x < xMax; x++)
+            for (int y = yMin; y < yMax; y++)
+                floorTilemap.SetTile(new Vector3Int(x, y, 0), floorTile);
+    }
+    void PaintCorridor(Edge edge)
+    {
+        // Convert room centers to tile coords
+        Vector2 start = edge.p1;
+        Vector2 end = edge.p2;
+
+        // L-shaped: horizontal then vertical
+        Vector2 corner = new Vector2(end.x, start.y);
+
+        PaintCorridorSegment(start, corner);
+        PaintCorridorSegment(corner, end);
+    }
+    void PaintCorridorSegment(Vector2 from, Vector2 to)
+    {
+        int corridorHalfWidth = Mathf.RoundToInt(corridorWidth / 2f);
+
+        int xMin = Mathf.RoundToInt(Mathf.Min(from.x, to.x));
+        int xMax = Mathf.RoundToInt(Mathf.Max(from.x, to.x));
+        int yMin = Mathf.RoundToInt(Mathf.Min(from.y, to.y));
+        int yMax = Mathf.RoundToInt(Mathf.Max(from.y, to.y));
+
+        // Fatten the corridor by half width in the perpendicular direction
+        bool isHorizontal = Mathf.Abs(to.x - from.x) > Mathf.Abs(to.y - from.y);
+        if (isHorizontal)
+        {
+            yMin -= corridorHalfWidth;
+            yMax += corridorHalfWidth;
+        }
+        else
+        {
+            xMin -= corridorHalfWidth;
+            xMax += corridorHalfWidth;
+        }
+
+        for (int x = xMin; x <= xMax; x++)
+            for (int y = yMin; y <= yMax; y++)
+                floorTilemap.SetTile(new Vector3Int(x, y, 0), floorTile);
+    }
+    void PaintWalls()
+    {
+        // If a neighbor has no floor tile, place a wall tile there
+        var floorPositions = new HashSet<Vector3Int>();
+        foreach (var pos in floorTilemap.cellBounds.allPositionsWithin)
+            if (floorTilemap.HasTile(pos))
+                floorPositions.Add(pos);
+
+        Vector3Int[] neighbors = {
+        Vector3Int.up, Vector3Int.down,
+        Vector3Int.left, Vector3Int.right,
+        new Vector3Int(1, 1, 0),  new Vector3Int(-1, 1, 0),
+        new Vector3Int(1, -1, 0), new Vector3Int(-1, -1, 0)
+    };
+
+        foreach (var pos in floorPositions)
+        {
+            foreach (var neighbor in neighbors)
+            {
+                Vector3Int wallPos = pos + neighbor;
+                if (!floorPositions.Contains(wallPos))
+                    wallTilemap.SetTile(wallPos, wallRuleTile);
+            }
+        }
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        foreach (var edge in roomEdges)
+        {
+            Gizmos.DrawLine(edge.p1, edge.p2);
+        }
+    }
+}
+class Edge
+{
+    public Vector2 p1, p2;
+
+    public Edge(Vector2 p1, Vector2 p2)
+    {
+        this.p1 = p1;
+        this.p2 = p2;
+    }
+
+    public float GetLength() => Vector2.Distance(p1, p2);
+    public override bool Equals(object obj) => obj is Edge e && ((e.p1 == p1 && e.p2 == p2) || (e.p1 == p2 && e.p2 == p1));
+    public override int GetHashCode() => p1.GetHashCode() ^ p2.GetHashCode();
+}
+class Triangle
+{
+    public Vector2 p1, p2, p3;
+    public Triangle(Vector2 p1, Vector2 p2, Vector2 p3)
+    {
+        this.p1 = p1;
+        this.p2 = p2;
+        this.p3 = p3;
+    }
+    public bool pointInCircumcircle(Vector2 point)
+    {
+        double ax_ = p1.x - point.x;
+        double ay_ = p1.y - point.y;
+        double bx_ = p2.x - point.x;
+        double by_ = p2.y - point.y;
+        double cx_ = p3.x - point.x;
+        double cy_ = p3.y - point.y;
+        return (
+            (ax_ * ax_ + ay_ * ay_) * (bx_ * cy_ - cx_ * by_) -
+            (bx_ * bx_ + by_ * by_) * (ax_ * cy_ - cx_ * ay_) +
+            (cx_ * cx_ + cy_ * cy_) * (ax_ * by_ - bx_ * ay_)
+        ) < 0;
+    }
+    public bool hasEdge(Vector2 a, Vector2 b)
+    {
+        return (this.p1 == a && this.p2 == b) ||
+               (this.p2 == a && this.p3 == b) ||
+               (this.p3 == a && this.p1 == b) ||
+               (this.p1 == b && this.p2 == a) ||
+               (this.p2 == b && this.p3 == a) ||
+               (this.p3 == b && this.p1 == a);
+    }
+    public bool hasVertex(Vector2 vert)
+    {
+        float eps = 0.001f;
+        return Vector2.Distance(p1, vert) < eps ||
+               Vector2.Distance(p2, vert) < eps ||
+               Vector2.Distance(p3, vert) < eps;
     }
 }
