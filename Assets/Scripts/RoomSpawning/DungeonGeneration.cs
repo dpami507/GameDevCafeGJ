@@ -1,5 +1,6 @@
 using NUnit.Framework.Internal;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
@@ -36,24 +37,29 @@ public class DungeonGeneration : MonoBehaviour
     [SerializeField] float corridorWidth;
 
     [Header("Tilemaps")]
-    public Tilemap floorTilemap;
-    public Tilemap wallTilemap;
+    [SerializeField] Tilemap floorTilemap;
+    [SerializeField] Tilemap wallTilemap;
 
     [Header("Tiles")]
-    public TileBase floorTile;
-    public RuleTile wallRuleTile;
+    [SerializeField] TileBase floorTile;
+    [SerializeField] RuleTile wallRuleTile;
+
+    // Special Room
+    Room startRoom;
+    Room endRoom;
 
     private void Start()
     {
+        Generate();
+    }
+    void Generate()
+    {
         GenerateSections();
-
         GenerateRooms();
-
         DelaunayTriangulation();
-
         GeneratePaths();
-
         GenerateTilemap();
+        FindSpecialRooms();
     }
     void GenerateSections()
     {
@@ -312,6 +318,25 @@ public class DungeonGeneration : MonoBehaviour
             roomEdges.Add(best);
             sortedEdges.RemoveAt(bestIndex);
         }
+
+        // Add a couple more paths
+        int extraPathsToAdd = sortedEdges.Count / 2;
+        int counter = 0;
+        for (int i = sortedEdges.Count - 1; i >= 0; i--)
+        {
+            // Skips edges we have already
+            if (roomEdges.Contains(sortedEdges[i]))
+            {
+                continue;
+            }
+
+            // Add the new edge if we can
+            if(counter < extraPathsToAdd)
+            {
+                counter++;
+                roomEdges.Add(sortedEdges[i]);
+            }
+        }
     }
     void GenerateTilemap()
     {
@@ -403,7 +428,40 @@ public class DungeonGeneration : MonoBehaviour
             }
         }
     }
+    void FindSpecialRooms()
+    {
+        // Break case
+        if(rooms.Count < 2)
+        {
+            Debug.LogError("Not enough rooms");
+            return;
+        }
 
+        // Initial Rooms
+        startRoom = rooms[0];
+        endRoom = rooms[1];
+
+        // Find largest distant rooms
+        for (var i = 0; i < rooms.Count; i++)
+        {
+            for (var j = i + 1; j < rooms.Count; j++)
+            {
+                if (Vector2.Distance(rooms[i].position, rooms[j].position) > 
+                    Vector2.Distance(startRoom.position, endRoom.position))
+                {
+                    startRoom = rooms[i];
+                    endRoom = rooms[j];
+                }
+
+            }
+        }
+
+        GameObject startRoomObj = new GameObject("Start Room");
+        startRoomObj.transform.position = startRoom.position;
+        
+        GameObject endRoomObj = new GameObject("End Room");
+        endRoomObj.transform.position = endRoom.position;
+    }
 
     private void OnDrawGizmos()
     {
