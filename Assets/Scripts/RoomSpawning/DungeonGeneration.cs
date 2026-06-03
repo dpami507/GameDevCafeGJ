@@ -463,10 +463,41 @@ public class DungeonGeneration : MonoBehaviour
         GameObject endRoomObj = new GameObject("End Room");
         endRoomObj.transform.position = endRoom.position;
     }
-    public void SetTileToColor(Vector2 point, Color color)
+    public void SetTilesToColor(Vector2 point, float radius, Color color)
     {
         Vector3Int cellPos = wallTilemap.WorldToCell(new Vector3(point.x, point.y, 0));
-        wallTilemap.SetColor(cellPos, color);
+
+        Vector2Int topLeft = new Vector2Int(cellPos.x - (int)radius, cellPos.y + (int)radius);
+        Vector2Int bottomRight = new Vector2Int(cellPos.x + (int)radius, cellPos.y - (int)radius);
+        for (int i = topLeft.x; i < bottomRight.x; i++)
+        {
+            for (int j = topLeft.y; j > bottomRight.y; j--)
+            {
+                float dist = Vector2.Distance(new Vector2(i, j), (Vector2Int)cellPos);
+                if (dist <= radius)
+                {
+                    float h, s, v;
+                    Color.RGBToHSV(color, out h, out s, out v);
+                    s = (radius - dist) / radius;
+
+                    // Get the current wall color
+                    Color currentWallColor;
+                    if(wallTilemap.HasTile(cellPos))
+                        currentWallColor = wallTilemap.GetColor(new Vector3Int(i, j, 0));
+                    else if (floorTilemap.HasTile(cellPos))
+                        currentWallColor = floorTilemap.GetColor(new Vector3Int(i, j, 0));
+                    else 
+                        currentWallColor = Color.white;
+
+                    // Mix it
+                    Color newColor = Color.Lerp(Color.HSVToRGB(h, s, v), currentWallColor, 0.5f);
+
+                    // Set it
+                    wallTilemap.SetColor(new Vector3Int(i, j, 0), newColor);
+                    floorTilemap.SetColor(new Vector3Int(i, j, 0), newColor);
+                }
+            }
+        }
     }
     private void OnDrawGizmos()
     {

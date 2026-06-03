@@ -19,6 +19,12 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField] int bulletsPerShot;
     [SerializeField] float bulletVelocity;
 
+    [Header("Charge Up")]
+    [SerializeField] float minCharge; // Quick tap
+    [SerializeField] float maxCharge; // Hold
+    [SerializeField] float chargeSpeed;
+    float currentCharge;
+
     // Input
     InputAction playerAction;
     bool playerShooting;
@@ -38,14 +44,21 @@ public class PlayerWeapon : MonoBehaviour
         lastShot += Time.deltaTime;
         if(playerShooting && lastShot > shotCooldown)
         {
+            currentCharge += chargeSpeed * Time.deltaTime;
+            currentCharge = Mathf.Clamp(currentCharge, minCharge, maxCharge);
+        }
+        if(playerAction.WasReleasedThisFrame())
+        {
             for (int i = 0; i < bulletsPerShot; i++)
             {
-                Shoot();
+                Shoot(currentCharge);
             }
+            currentCharge = 0f;
             lastShot = 0f;
         }
+
     }
-    void Shoot()
+    void Shoot(float size)
     {
         // Add spread
         Vector3 dir = playerTransform.up;
@@ -56,7 +69,7 @@ public class PlayerWeapon : MonoBehaviour
         // Spawn Bullets
         GameObject _bulletGO = Instantiate(bullet, muzzle.position, bulletDir);
         Bullet _bullet = _bulletGO.GetComponent<Bullet>();
-        _bullet.StartBullet(bulletVelocity);
+        _bullet.StartBullet(bulletVelocity, size);
     }
     void Look()
     {

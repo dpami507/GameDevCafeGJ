@@ -12,7 +12,7 @@ public class Bullet : MonoBehaviour
     TrailRenderer trail;
 
     Gradient particleGradient;
-    Vector2 startVelocity;
+    float size;
 
     Color bulletColor;
     float speed;
@@ -23,13 +23,16 @@ public class Bullet : MonoBehaviour
         trail = GetComponent<TrailRenderer>();
         particle = GetComponent<ParticleSystem>();
     }
-    public void StartBullet(float _speed)
+    public void StartBullet(float _speed, float _size)
     {
         speed = _speed;
-        startVelocity = GetComponent<Rigidbody2D>().linearVelocity;
+        size = _size;
+
+        // Set scale
+        transform.localScale = Vector3.one * size;
 
         // Pick a random color
-        bulletColor = Random.ColorHSV();
+        bulletColor = Color.HSVToRGB(Random.value, 1, 1);
 
         // Create gradient
         particleGradient = new Gradient();
@@ -63,6 +66,10 @@ public class Bullet : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.transform.tag == "Player")
+        {
+            return;
+        }
         Explode(collision);
 
         // Change tile color
@@ -71,7 +78,7 @@ public class Bullet : MonoBehaviour
             return;
 
         Vector2 contactPoint = collision.contacts[0].point + (Vector2)(collision.contacts[0].normal * -0.1f);
-        gen.SetTileToColor(contactPoint, bulletColor);
+        gen.SetTilesToColor(contactPoint, size, bulletColor);
     }
     void Explode(Collision2D collision)
     {
