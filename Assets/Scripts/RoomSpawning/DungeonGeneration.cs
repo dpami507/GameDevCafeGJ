@@ -4,6 +4,7 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -462,7 +463,11 @@ public class DungeonGeneration : MonoBehaviour
         GameObject endRoomObj = new GameObject("End Room");
         endRoomObj.transform.position = endRoom.position;
     }
-
+    public void SetTileToColor(Vector2 point, Color color)
+    {
+        Vector3Int cellPos = wallTilemap.WorldToCell(new Vector3(point.x, point.y, 0));
+        wallTilemap.SetColor(cellPos, color);
+    }
     private void OnDrawGizmos()
     {
         foreach (var edge in roomEdges)

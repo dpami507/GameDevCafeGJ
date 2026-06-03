@@ -1,17 +1,22 @@
-using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(TrailRenderer))]
 public class Bullet : MonoBehaviour
 {
+    [SerializeField] GameObject explosionParticle;
+
     Rigidbody2D rb;
     ParticleSystem particle;
     TrailRenderer trail;
 
+    Gradient particleGradient;
+    Vector2 startVelocity;
+
     Color bulletColor;
     float speed;
-    float damage;
+
     private void OnEnable()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -21,12 +26,13 @@ public class Bullet : MonoBehaviour
     public void StartBullet(float _speed)
     {
         speed = _speed;
+        startVelocity = GetComponent<Rigidbody2D>().linearVelocity;
 
         // Pick a random color
         bulletColor = Random.ColorHSV();
 
         // Create gradient
-        Gradient particleGradient = new Gradient();
+        particleGradient = new Gradient();
         GradientColorKey[] colorKeys = new GradientColorKey[1];
         GradientAlphaKey[] alphaKeys = new GradientAlphaKey[2];
         colorKeys[0].color = bulletColor;
@@ -54,5 +60,32 @@ public class Bullet : MonoBehaviour
 
         // Kill after 5 seconds
         Destroy(this.gameObject, 5f);
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Explode(collision);
+
+        // Change tile color
+        DungeonGeneration gen = FindFirstObjectByType<DungeonGeneration>();
+        if (gen == null)
+            return;
+
+        Vector2 contactPoint = collision.contacts[0].point + (Vector2)(collision.contacts[0].normal * -0.1f);
+        gen.SetTileToColor(contactPoint, bulletColor);
+    }
+    void Explode(Collision2D collision)
+    {
+        // Create GameObject
+        GameObject explosionParticleGO = Instantiate(explosionParticle, transform.position, Quaternion.identity);
+
+        // Set the particle system
+        ParticleSystem.ColorOverLifetimeModule col = explosionParticleGO.GetComponent<ParticleSystem>().colorOverLifetime;
+        ParticleSystem.MinMaxGradient gr = new ParticleSystem.MinMaxGradient(particleGradient);
+        gr.mode = ParticleSystemGradientMode.Gradient;
+        col.color = gr;
+
+        // Cleanup time
+        Destroy(explosionParticleGO, 1f);
+        Destroy(this.gameObject);
     }
 }
