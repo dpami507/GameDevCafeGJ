@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.ParticleSystem;
 
 public class PlayerWeapon : MonoBehaviour
 {
@@ -24,6 +25,9 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField] float maxCharge; // Hold
     [SerializeField] float chargeSpeed;
     float currentCharge;
+    [SerializeField] ParticleSystem chargeParticles;
+    ParticleSystem.MainModule mainModule;
+    Color nextColor;
 
     // Input
     InputAction playerAction;
@@ -34,6 +38,10 @@ public class PlayerWeapon : MonoBehaviour
         playerAction = InputSystem.actions.FindAction("Shoot");
 
         shotCooldown = 1f / shotsPerSecond;
+
+        chargeParticles.Stop();
+        mainModule = chargeParticles.main;
+        mainModule.startColor = Color.yellow;
     }
     private void Update()
     {
@@ -42,13 +50,28 @@ public class PlayerWeapon : MonoBehaviour
         playerShooting = playerAction.IsPressed();
 
         lastShot += Time.deltaTime;
-        if(playerShooting && lastShot > shotCooldown)
+        
+        if (playerAction.WasPerformedThisFrame())
+        {
+            nextColor = Color.HSVToRGB(Random.value, 1, 1);
+            mainModule.startColor = nextColor;
+            chargeParticles.Play();
+            currentCharge = minCharge;
+        }
+        if (playerShooting && lastShot > shotCooldown)
         {
             currentCharge += chargeSpeed * Time.deltaTime;
             currentCharge = Mathf.Clamp(currentCharge, minCharge, maxCharge);
+
+            mainModule.startSize = currentCharge / 10f;
+
+            Events.TriggerCameraShake(currentCharge * 0.025f);
         }
         if(playerAction.WasReleasedThisFrame())
         {
+            chargeParticles.Stop();
+            chargeParticles.Clear();
+
             for (int i = 0; i < bulletsPerShot; i++)
             {
                 Shoot(currentCharge);
@@ -69,7 +92,7 @@ public class PlayerWeapon : MonoBehaviour
         // Spawn Bullets
         GameObject _bulletGO = Instantiate(bullet, muzzle.position, bulletDir);
         Bullet _bullet = _bulletGO.GetComponent<Bullet>();
-        _bullet.StartBullet(bulletVelocity, size);
+        _bullet.StartBullet(bulletVelocity, size, nextColor);
     }
     void Look()
     {

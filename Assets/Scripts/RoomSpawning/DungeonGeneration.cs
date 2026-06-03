@@ -476,8 +476,8 @@ public class DungeonGeneration : MonoBehaviour
                 float dist = Vector2.Distance(new Vector2(i, j), (Vector2Int)cellPos);
                 if (dist <= radius)
                 {
-                    float h, s, v;
-                    Color.RGBToHSV(color, out h, out s, out v);
+                    // Get the current bullet color as HSV
+                    Color.RGBToHSV(color, out float h, out float s, out float v);
                     s = (radius - dist) / radius;
 
                     // Get the current wall color
@@ -489,8 +489,7 @@ public class DungeonGeneration : MonoBehaviour
                     else 
                         currentWallColor = Color.white;
 
-                    // Mix it
-                    Color newColor = Color.Lerp(Color.HSVToRGB(h, s, v), currentWallColor, 0.5f);
+                    Color newColor = Color.Lerp(currentWallColor, Color.HSVToRGB(h, s, v), 0.5f);
 
                     // Set it
                     wallTilemap.SetColor(new Vector3Int(i, j, 0), newColor);

@@ -1,4 +1,3 @@
-using Unity.Hierarchy;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -27,8 +26,11 @@ public class PlayerCamFollow : MonoBehaviour
     Camera cam;
 
     InputAction playerAction;
+
     private void Start()
     {
+        Events.ShakeCamera += Shake;
+
         cam = GetComponent<Camera>();
         initZoomAmount = cam.orthographicSize;
 
@@ -49,20 +51,19 @@ public class PlayerCamFollow : MonoBehaviour
         lastShook += Time.deltaTime;
         if(playerAction.IsPressed())
         {
-            Shake();
+            if (lastShook > shakeCooldown) return;
+
+            Shake(1f);
         }
     }
-    public void Shake()
+    public void Shake(float magnitude = 1)
     {
-        if(lastShook > shakeCooldown)
-        {
-            int shakeDir = (Random.value > 0.5) ? 1 : -1;
-            transform.rotation = Quaternion.Euler(0, 0, shakeAngleAmount * shakeDir);
+        int shakeDir = (Random.value > 0.5) ? 1 : -1;
+        transform.rotation = Quaternion.Euler(0, 0, shakeAngleAmount * shakeDir * magnitude);
 
-            int zoomDir = (Random.value > 0.5) ? 1 : -1;
-            cam.orthographicSize = initZoomAmount + (zoomAmount * zoomDir);
+        int zoomDir = (Random.value > 0.5) ? 1 : -1;
+        cam.orthographicSize = initZoomAmount + (zoomAmount * zoomDir * magnitude);
 
-            lastShook = 0;
-        }
+        lastShook = 0;
     }
 }

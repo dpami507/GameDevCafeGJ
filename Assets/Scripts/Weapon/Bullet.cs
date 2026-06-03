@@ -23,7 +23,7 @@ public class Bullet : MonoBehaviour
         trail = GetComponent<TrailRenderer>();
         particle = GetComponent<ParticleSystem>();
     }
-    public void StartBullet(float _speed, float _size)
+    public void StartBullet(float _speed, float _size, Color _color)
     {
         speed = _speed;
         size = _size;
@@ -32,7 +32,7 @@ public class Bullet : MonoBehaviour
         transform.localScale = Vector3.one * size;
 
         // Pick a random color
-        bulletColor = Color.HSVToRGB(Random.value, 1, 1);
+        bulletColor = _color;
 
         // Create gradient
         particleGradient = new Gradient();
