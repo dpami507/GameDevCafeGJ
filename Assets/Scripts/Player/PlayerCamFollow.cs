@@ -41,6 +41,12 @@ public class PlayerCamFollow : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(target == null)
+        {
+            target = FindFirstObjectByType<PlayerMovement>().transform;
+            return;
+        }
+
         //Calculate the position of it should be
         Vector3 thisPos = target.position + offset;
         transform.position = Vector3.SmoothDamp(transform.position, thisPos, ref vel, smoothTime, maxSpeed);

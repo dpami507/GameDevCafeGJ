@@ -48,12 +48,7 @@ public class DungeonGeneration : MonoBehaviour
     // Special Room
     Room startRoom;
     Room endRoom;
-
-    private void Start()
-    {
-        Generate();
-    }
-    void Generate()
+    public void Generate()
     {
         GenerateSections();
         GenerateRooms();
@@ -62,6 +57,7 @@ public class DungeonGeneration : MonoBehaviour
         GenerateTilemap();
         FindSpecialRooms();
     }
+    public Vector2 GetStartPos() => startRoom.position;
     void GenerateSections()
     {
         Section initialSection = new Section(transform.position, mapWidth, mapHeight);
