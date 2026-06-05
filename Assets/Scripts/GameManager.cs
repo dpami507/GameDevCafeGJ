@@ -6,9 +6,13 @@ public class GameManager : MonoBehaviour
     DungeonGeneration generation;
     [SerializeField] GameObject playerPrefab;
 
+    [SerializeField] EnemySpawner spawner;
+
     void Start()
     {
         CreateLevel();
+
+        spawner.SpawnEnemies(generation.GetTilemap());
     }
 
     void CreateLevel()

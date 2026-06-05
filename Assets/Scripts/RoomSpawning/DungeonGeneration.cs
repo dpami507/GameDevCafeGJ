@@ -2,6 +2,7 @@ using NUnit.Framework.Internal;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -58,6 +59,8 @@ public class DungeonGeneration : MonoBehaviour
         FindSpecialRooms();
     }
     public Vector2 GetStartPos() => startRoom.position;
+    public Tilemap GetTilemap() => floorTilemap;
+    public Vector2 GetDungeonSize() => new Vector2(mapWidth, mapHeight);
     void GenerateSections()
     {
         Section initialSection = new Section(transform.position, mapWidth, mapHeight);
@@ -474,18 +477,26 @@ public class DungeonGeneration : MonoBehaviour
                 {
                     // Get the current bullet color as HSV
                     Color.RGBToHSV(color, out float h, out float s, out float v);
-                    s = (radius - dist) / radius;
+
+                    float influence = Mathf.Pow((radius - dist) / radius, 2f);
 
                     // Get the current wall color
                     Color currentWallColor;
-                    if(wallTilemap.HasTile(cellPos))
-                        currentWallColor = wallTilemap.GetColor(new Vector3Int(i, j, 0));
-                    else if (floorTilemap.HasTile(cellPos))
-                        currentWallColor = floorTilemap.GetColor(new Vector3Int(i, j, 0));
+                    Vector3Int tilePos = new Vector3Int(i, j, 0);
+                    if (wallTilemap.HasTile(tilePos))
+                        currentWallColor = wallTilemap.GetColor(tilePos);
+                    else if (floorTilemap.HasTile(tilePos))
+                        currentWallColor = floorTilemap.GetColor(tilePos);
                     else 
                         currentWallColor = Color.white;
 
-                    Color newColor = Color.Lerp(currentWallColor, Color.HSVToRGB(h, s, v), 0.5f);
+                    Color.RGBToHSV(currentWallColor, out float currentH, out float currentS, out float currentV);
+
+                    // Calculate the new Color
+                    float newH = Mathf.LerpAngle(currentH * 360f, h * 360f, influence) / 360f;
+                    float newS = Mathf.Lerp(currentS, s, influence);
+                    float newV = 1f;
+                    Color newColor = Color.HSVToRGB(newH, newS, newV);
 
                     // Set it
                     wallTilemap.SetColor(new Vector3Int(i, j, 0), newColor);
