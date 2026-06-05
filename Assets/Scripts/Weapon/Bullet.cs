@@ -12,10 +12,11 @@ public class Bullet : MonoBehaviour
     TrailRenderer trail;
 
     Gradient particleGradient;
-    float size;
-
     Color bulletColor;
+
+    float size;
     float speed;
+    float damage;
 
     private void OnEnable()
     {
@@ -23,9 +24,10 @@ public class Bullet : MonoBehaviour
         trail = GetComponent<TrailRenderer>();
         particle = GetComponent<ParticleSystem>();
     }
-    public void StartBullet(float _speed, float _size, Color _color)
+    public void StartBullet(float _speed, float _damage, float _size, Color _color)
     {
         speed = _speed;
+        damage = Mathf.Round(_damage * _size);
         size = _size;
 
         // Set scale
@@ -86,10 +88,34 @@ public class Bullet : MonoBehaviour
         GameObject explosionParticleGO = Instantiate(explosionParticle, transform.position, Quaternion.identity);
 
         // Set the particle system
-        ParticleSystem.ColorOverLifetimeModule col = explosionParticleGO.GetComponent<ParticleSystem>().colorOverLifetime;
+        ParticleSystem system = explosionParticleGO.GetComponent<ParticleSystem>();
+
+        ParticleSystem.MainModule mm = system.main;
+        mm.startLifetime = size / 5f;
+
         ParticleSystem.MinMaxGradient gr = new ParticleSystem.MinMaxGradient(particleGradient);
         gr.mode = ParticleSystemGradientMode.Gradient;
+
+        ParticleSystem.ColorOverLifetimeModule col = system.colorOverLifetime;
         col.color = gr;
+
+        ParticleSystem.EmissionModule em = system.emission;
+        em.burstCount = em.burstCount * (int)size;
+
+        // Damage
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, size, Vector2.up);
+        foreach(var hit in hits)
+        {
+            if (!hit.transform) continue;
+
+            if(hit.transform.TryGetComponent<EnemyHealth>(out EnemyHealth enemyHealth))
+            {
+                // Get distance
+                float distance = Vector2.Distance(hit.transform.position, transform.position);
+                enemyHealth.TakeDamage(damage);
+            }
+
+        }
 
         // Cleanup time
         Destroy(explosionParticleGO, 1f);

@@ -19,6 +19,7 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField] int spreadAngle;
     [SerializeField] int bulletsPerShot;
     [SerializeField] float bulletVelocity;
+    [SerializeField] float baseDamage;
 
     [Header("Charge Up")]
     [SerializeField] float minCharge; // Quick tap
@@ -47,28 +48,40 @@ public class PlayerWeapon : MonoBehaviour
     {
         Look(); 
 
+        lastShot += Time.deltaTime;
+        if(lastShot > shotCooldown)
+        {
+            ChargeUp();
+        }
+    }
+    void ChargeUp()
+    {
         playerShooting = playerAction.IsPressed();
 
-        lastShot += Time.deltaTime;
-        
         if (playerAction.WasPerformedThisFrame())
         {
+            Debug.Log("Pressed");
+
             nextColor = Color.HSVToRGB(Random.value, 1, 1);
             mainModule.startColor = nextColor;
             chargeParticles.Play();
             currentCharge = minCharge;
         }
-        if (playerShooting && lastShot > shotCooldown)
+        if (playerShooting)
         {
+            Debug.Log("Charging");
+
             currentCharge += chargeSpeed * Time.deltaTime;
             currentCharge = Mathf.Clamp(currentCharge, minCharge, maxCharge);
 
             mainModule.startSize = currentCharge / 10f;
 
-            Events.TriggerCameraShake(currentCharge * 0.025f);
+            Events.AddCameraZoom(currentCharge - minCharge);
         }
-        if(playerAction.WasReleasedThisFrame())
+        if (playerAction.WasReleasedThisFrame())
         {
+            Debug.Log("Shoot");
+
             chargeParticles.Stop();
             chargeParticles.Clear();
 
@@ -79,10 +92,10 @@ public class PlayerWeapon : MonoBehaviour
             currentCharge = 0f;
             lastShot = 0f;
         }
-
     }
     void Shoot(float size)
     {
+
         // Add spread
         Vector3 dir = playerTransform.up;
         float randSpread = Random.Range(-spreadAngle, spreadAngle);
@@ -92,7 +105,7 @@ public class PlayerWeapon : MonoBehaviour
         // Spawn Bullets
         GameObject _bulletGO = Instantiate(bullet, muzzle.position, bulletDir);
         Bullet _bullet = _bulletGO.GetComponent<Bullet>();
-        _bullet.StartBullet(bulletVelocity, size, nextColor);
+        _bullet.StartBullet(bulletVelocity, baseDamage, size, nextColor);
     }
     void Look()
     {

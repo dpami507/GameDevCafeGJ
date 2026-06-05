@@ -30,6 +30,7 @@ public class PlayerCamFollow : MonoBehaviour
     private void Start()
     {
         Events.ShakeCamera += Shake;
+        Events.ZoomCamera += SetZoom;
 
         cam = GetComponent<Camera>();
         initZoomAmount = cam.orthographicSize;
@@ -61,9 +62,10 @@ public class PlayerCamFollow : MonoBehaviour
         int shakeDir = (Random.value > 0.5) ? 1 : -1;
         transform.rotation = Quaternion.Euler(0, 0, shakeAngleAmount * shakeDir * magnitude);
 
-        int zoomDir = (Random.value > 0.5) ? 1 : -1;
-        cam.orthographicSize = initZoomAmount + (zoomAmount * zoomDir * magnitude);
-
         lastShook = 0;
+    }
+    public void SetZoom(float amount)
+    {
+        cam.orthographicSize = initZoomAmount + (zoomAmount * amount);
     }
 }
