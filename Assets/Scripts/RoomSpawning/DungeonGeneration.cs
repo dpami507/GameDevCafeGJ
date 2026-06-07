@@ -475,32 +475,31 @@ public class DungeonGeneration : MonoBehaviour
                 float dist = Vector2.Distance(new Vector2(i, j), (Vector2Int)cellPos);
                 if (dist <= radius)
                 {
-                    // Get the current bullet color as HSV
-                    Color.RGBToHSV(color, out float h, out float s, out float v);
-
                     float influence = Mathf.Pow((radius - dist) / radius, 2f);
 
-                    // Get the current wall color
-                    Color currentWallColor;
                     Vector3Int tilePos = new Vector3Int(i, j, 0);
+
+                    Color currentWallColor;
+
                     if (wallTilemap.HasTile(tilePos))
                         currentWallColor = wallTilemap.GetColor(tilePos);
                     else if (floorTilemap.HasTile(tilePos))
                         currentWallColor = floorTilemap.GetColor(tilePos);
-                    else 
+                    else
                         currentWallColor = Color.white;
 
-                    Color.RGBToHSV(currentWallColor, out float currentH, out float currentS, out float currentV);
+                    // Handle untouched tiles that may return transparent black
+                    if (currentWallColor.a == 0f)
+                        currentWallColor = Color.white;
 
-                    // Calculate the new Color
-                    float newH = Mathf.LerpAngle(currentH * 360f, h * 360f, influence) / 360f;
-                    float newS = Mathf.Lerp(currentS, s, influence);
-                    float newV = 1f;
-                    Color newColor = Color.HSVToRGB(newH, newS, newV);
+                    Color newColor = Color.Lerp(
+                        currentWallColor,
+                        color,
+                        influence
+                    );
 
-                    // Set it
-                    wallTilemap.SetColor(new Vector3Int(i, j, 0), newColor);
-                    floorTilemap.SetColor(new Vector3Int(i, j, 0), newColor);
+                    wallTilemap.SetColor(tilePos, newColor);
+                    floorTilemap.SetColor(tilePos, newColor);
                 }
             }
         }

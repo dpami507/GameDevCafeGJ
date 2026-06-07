@@ -32,6 +32,7 @@ public class EnemyMovement : MonoBehaviour
     }
     void Move(float dist)
     {
+        GameManager.instance.SetTileToColor(new Vector3Int((int)transform.position.x, (int)transform.position.y), Color.white);
         if (dist > stopDistance && dist < maxDistance)
         {
             Vector2 dir = target.position - transform.position;

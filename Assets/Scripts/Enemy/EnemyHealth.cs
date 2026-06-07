@@ -17,6 +17,11 @@ public class EnemyHealth : BaseHealth
 
         base.TakeDamage(amount);
     }
+    protected override void Die()
+    {
+        base.Die();
+        GameManager.instance.GetDungeon().SetTilesToColor(transform.position, 5, Color.HSVToRGB((Random.value), 1f, 1f));
+    }
     void SpawnDamageIndicator(float amount)
     {
         float angle = Random.Range(0, 360);
