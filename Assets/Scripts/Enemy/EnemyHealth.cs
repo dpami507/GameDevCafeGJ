@@ -2,38 +2,20 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour
+public class EnemyHealth : BaseHealth
 {
-    [SerializeField] int currentHealth;
-    [SerializeField] int maxHealth;
-
     [Header("Visual")]
     [SerializeField] GameObject damageIndicatorPrefab;
     [SerializeField] float dmgIndicatorDistance;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] float vanishTime;
 
-    private void Start()
-    {
-        currentHealth = maxHealth;
-    }
-    private void Update()
-    {
-        if(currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-    public void TakeDamage(float amount)
+    public override void TakeDamage(float amount)
     {
         SpawnDamageIndicator(amount);
-        currentHealth -= Mathf.RoundToInt(amount);
-
         StartCoroutine(nameof(HitFeedback));
-    }
-    void Die()
-    {
-        Destroy(this.gameObject);
+
+        base.TakeDamage(amount);
     }
     void SpawnDamageIndicator(float amount)
     {

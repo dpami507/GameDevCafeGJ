@@ -103,7 +103,7 @@ public class Bullet : MonoBehaviour
         em.burstCount = em.burstCount * (int)size;
 
         // Damage
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, size, Vector2.up);
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, size / 2, Vector2.up);
         foreach(var hit in hits)
         {
             if (!hit.transform) continue;
@@ -112,7 +112,14 @@ public class Bullet : MonoBehaviour
             {
                 // Get distance
                 float distance = Vector2.Distance(hit.transform.position, transform.position);
-                enemyHealth.TakeDamage(damage);
+
+                float takenDamage = damage * ((size - distance) / size);
+                takenDamage = Mathf.Ceil(takenDamage);
+
+                // Dont take zero damage lol
+                if (takenDamage <= 0) continue;
+
+                enemyHealth.TakeDamage(takenDamage);
             }
 
         }

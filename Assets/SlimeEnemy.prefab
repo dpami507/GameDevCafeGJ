@@ -50,6 +50,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   movementSpeed: 1
   stopDistance: 1
+  maxDistance: 10
+  attackDistance: 1.5
+  damage: 1
+  attackCooldown: 1
 --- !u!114 &3417239119346722952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,7 +67,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   currentHealth: 0
-  maxHealth: 5
+  maxHealth: 10
   damageIndicatorPrefab: {fileID: 8782399057143777837, guid: 8507f68a9fb3f364e8e7d5e2cbb7b10e, type: 3}
   dmgIndicatorDistance: 1
   spriteRenderer: {fileID: 1258176126193983340}
