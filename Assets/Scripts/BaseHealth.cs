@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BaseHealth : MonoBehaviour
 {
-    [SerializeField] protected int currentHealth;
+    [SerializeField] protected float currentHealth;
     [SerializeField] protected int maxHealth;
 
     private void Start()
@@ -18,7 +18,7 @@ public class BaseHealth : MonoBehaviour
     }
     public virtual void TakeDamage(float amount)
     {
-        currentHealth -= Mathf.RoundToInt(amount);
+        currentHealth -= amount;
     }
 
     protected virtual void Die()

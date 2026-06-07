@@ -112,9 +112,10 @@ public class Bullet : MonoBehaviour
             {
                 // Get distance
                 float distance = Vector2.Distance(hit.transform.position, transform.position);
+                distance = Mathf.Floor(distance);
 
                 float takenDamage = damage * ((size - distance) / size);
-                takenDamage = Mathf.Ceil(takenDamage);
+                takenDamage = Mathf.Round(takenDamage * 10) / 10;
 
                 // Dont take zero damage lol
                 if (takenDamage <= 0) continue;

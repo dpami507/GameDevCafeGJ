@@ -98,7 +98,6 @@ public class PlayerWeapon : MonoBehaviour
     }
     void Shoot(float size)
     {
-
         // Add spread
         Vector3 dir = playerTransform.up;
         float randSpread = Random.Range(-spreadAngle, spreadAngle);
@@ -110,11 +109,6 @@ public class PlayerWeapon : MonoBehaviour
         Bullet _bullet = _bulletGO.GetComponent<Bullet>();
         _bullet.StartBullet(bulletVelocity, CalculateBaseDamage(), size, nextColor);
     }
-    void CalculateShotCooldown() => shotCooldown = 1f / (shotsPerSecond * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.AttackSpeed));
-    float CalculateBaseDamage() => baseDamage * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.AttackDamange);
-    float CalculateShotSize() => currentCharge * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.AttackSize);
-    float GetChargeSpeed() => chargeSpeed * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.ChargeSpeed);
-    float GetMaxShotSize() => maxCharge * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.MaxCharge);
     void Look()
     {
         // Rotate towards cursor
@@ -125,4 +119,9 @@ public class PlayerWeapon : MonoBehaviour
         float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
         playerTransform.rotation = Quaternion.Euler(0, 0, angle + 90);
     }
+    void CalculateShotCooldown() => shotCooldown = 1f / (shotsPerSecond * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.AttackSpeed));
+    float CalculateBaseDamage() => baseDamage * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.AttackDamange);
+    float CalculateShotSize() => currentCharge * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.AttackSize);
+    float GetChargeSpeed() => chargeSpeed * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.ChargeSpeed);
+    float GetMaxShotSize() => maxCharge * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.MaxCharge);
 }
