@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
 using static UnityEngine.ParticleSystem;
+using static UpgradeManager;
 
 public class PlayerWeapon : MonoBehaviour
 {
@@ -38,7 +40,7 @@ public class PlayerWeapon : MonoBehaviour
     {
         playerAction = InputSystem.actions.FindAction("Shoot");
 
-        shotCooldown = 1f / shotsPerSecond;
+        CalculateShotCooldown();
 
         chargeParticles.Stop();
         mainModule = chargeParticles.main;
@@ -58,6 +60,7 @@ public class PlayerWeapon : MonoBehaviour
     {
         playerShooting = playerAction.IsPressed();
 
+        CalculateShotCooldown();
         if (playerAction.WasPerformedThisFrame())
         {
             Debug.Log("Pressed");
@@ -71,8 +74,8 @@ public class PlayerWeapon : MonoBehaviour
         {
             Debug.Log("Charging");
 
-            currentCharge += chargeSpeed * Time.deltaTime;
-            currentCharge = Mathf.Clamp(currentCharge, minCharge, maxCharge);
+            currentCharge += GetChargeSpeed() * Time.deltaTime;
+            currentCharge = Mathf.Clamp(currentCharge, minCharge, GetMaxShotSize());
 
             mainModule.startSize = currentCharge / 10f;
 
@@ -87,7 +90,7 @@ public class PlayerWeapon : MonoBehaviour
 
             for (int i = 0; i < bulletsPerShot; i++)
             {
-                Shoot(currentCharge);
+                Shoot(CalculateShotSize());
             }
             currentCharge = 0f;
             lastShot = 0f;
@@ -105,8 +108,13 @@ public class PlayerWeapon : MonoBehaviour
         // Spawn Bullets
         GameObject _bulletGO = Instantiate(bullet, muzzle.position, bulletDir);
         Bullet _bullet = _bulletGO.GetComponent<Bullet>();
-        _bullet.StartBullet(bulletVelocity, baseDamage, size, nextColor);
+        _bullet.StartBullet(bulletVelocity, CalculateBaseDamage(), size, nextColor);
     }
+    void CalculateShotCooldown() => shotCooldown = 1f / (shotsPerSecond * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.AttackSpeed));
+    float CalculateBaseDamage() => baseDamage * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.AttackDamange);
+    float CalculateShotSize() => currentCharge * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.AttackSize);
+    float GetChargeSpeed() => chargeSpeed * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.ChargeSpeed);
+    float GetMaxShotSize() => maxCharge * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.MaxCharge);
     void Look()
     {
         // Rotate towards cursor

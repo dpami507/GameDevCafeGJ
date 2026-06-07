@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UpgradeManager;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
@@ -29,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //Player Movement
         playerMoveInput = playerAction.ReadValue<Vector2>();
-        rb.linearVelocity = playerMoveInput.normalized * movementSpeed;
+        rb.linearVelocity = playerMoveInput.normalized * movementSpeed * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.MovementSpeed);
 
         // Get direction and hold if not moving
         if(Mathf.Abs(playerMoveInput.x) > 0.05f)
