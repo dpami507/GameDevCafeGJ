@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5585978364283292011}
   - component: {fileID: 3891495269119971567}
   - component: {fileID: 3417239119346722952}
+  - component: {fileID: -7349583926071650253}
   - component: {fileID: 1258176126193983340}
   - component: {fileID: 490184716222839455}
   - component: {fileID: 4793673177241152344}
@@ -72,6 +73,26 @@ MonoBehaviour:
   dmgIndicatorDistance: 1
   spriteRenderer: {fileID: 1258176126193983340}
   vanishTime: 0.1
+--- !u!114 &-7349583926071650253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7216330530547571871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b62c8aff32312c4785db1ea853b1bb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  dropPrefab: {fileID: 6910583439835476194, guid: d160ff2b5a7bf1a4dbbe75a97f8983ee, type: 3}
+  possibleUpgradeTypes:
+  - {fileID: 11400000, guid: a4821a21cf25d434487d74dec1ba52da, type: 2}
+  - {fileID: 11400000, guid: 51a1426acf8dcaa42929cb37d5734e45, type: 2}
+  - {fileID: 11400000, guid: 346fe2416a3466a41b731a3fda4fa341, type: 2}
+  - {fileID: 11400000, guid: 34fcd910390c2db4fb64e37fb694c24d, type: 2}
+  - {fileID: 11400000, guid: 07c0afbbca8e24f4f8417c1034be81c0, type: 2}
+  - {fileID: 11400000, guid: 58d931381f57f274d8dbbe1abec70573, type: 2}
 --- !u!212 &1258176126193983340
 SpriteRenderer:
   serializedVersion: 2
