@@ -43,7 +43,7 @@ public class PlayerCamFollow : MonoBehaviour
     {
         if(target == null)
         {
-            target = FindFirstObjectByType<PlayerMovement>().transform;
+            target = FindFirstObjectByType<PlayerMovement>()?.transform;
             return;
         }
 

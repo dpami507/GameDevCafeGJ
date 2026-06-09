@@ -8,11 +8,12 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] float stopDistance;
     [SerializeField] float maxDistance;
 
-    [Header("Attack Variables")]
-    [SerializeField] float attackDistance;
-    [SerializeField] int damage;
-    [SerializeField] float attackCooldown;
-    float lastAttacked;
+    [Header("Runaway")]
+    [SerializeField] bool shouldRunaway;
+    [SerializeField] float runAwayDistance;
+
+    [Header("Attack")]
+    [SerializeField] EnemyBaseAttack attack;
 
     Rigidbody2D rb;
     Transform target;
@@ -20,15 +21,21 @@ public class EnemyMovement : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        target = FindFirstObjectByType<PlayerMovement>().transform;
+        target = FindFirstObjectByType<PlayerMovement>()?.transform;
     }
 
     private void Update()
     {
+        if(target == null)
+        {
+            target = FindFirstObjectByType<PlayerMovement>()?.transform;
+            return;
+        }
+
         float dist = Vector2.Distance(target.position, transform.position);
         
         Move(dist);
-        TryAttack(dist);
+        attack.TryAttack(target);
     }
     void Move(float dist)
     {
@@ -38,27 +45,14 @@ public class EnemyMovement : MonoBehaviour
             Vector2 dir = target.position - transform.position;
             rb.linearVelocity = dir.normalized * movementSpeed;
         }
+        else if(shouldRunaway && dist < runAwayDistance)
+        {
+            Vector2 dir = target.position - transform.position;
+            rb.linearVelocity = -dir.normalized * movementSpeed;
+        }
         else
         {
             rb.linearVelocity = Vector2.zero;
-        }
-    }
-    void TryAttack(float dist)
-    {
-        lastAttacked += Time.deltaTime;
-        if (lastAttacked < attackCooldown) return;
-
-        if(dist <= attackDistance)
-        {
-            RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, attackDistance, Vector2.up);
-            foreach(var hit in hits)
-            {
-                if(hit.transform && hit.transform.TryGetComponent<PlayerHealth>(out PlayerHealth playerHealth))
-                {
-                    playerHealth.TakeDamage(damage);
-                    lastAttacked = 0;
-                }
-            }
         }
     }
 }
