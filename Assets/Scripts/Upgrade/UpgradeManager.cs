@@ -11,6 +11,7 @@ public enum UpgradeTypes
     AttackSize,
     ChargeSpeed,
     MaxCharge,
+    Health
 };
 
 public class UpgradeManager : MonoBehaviour
@@ -37,6 +38,11 @@ public class UpgradeManager : MonoBehaviour
     void TriggerUpgrade(UpgradeTypes id, float amount)
     {
         if (upgradeList.Count <= 0) return;
+
+        if(id == UpgradeTypes.Health)
+        {
+            Events.PlayerAddHealth(amount);
+        }
 
         foreach (var upgrade in upgradeList)
         {

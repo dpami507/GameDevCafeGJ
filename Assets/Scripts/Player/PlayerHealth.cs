@@ -5,6 +5,7 @@ public class PlayerHealth : BaseHealth
     private void Start()
     {
         Events.TriggerPlayerHealth += TakeDamage;
+        Events.TriggerPlayerAddHealth += AddHealth;
     }
     public override void TakeDamage(float amount)
     {
@@ -12,6 +13,10 @@ public class PlayerHealth : BaseHealth
         Debug.Log($"Player Took Damage! -{amount}, {currentHealth}/{maxHealth}");
 
         Events.TriggerCameraShake(1f);
+    }
+    public override void AddHealth(float amount)
+    {
+        base.AddHealth(amount);
     }
     protected override void Die()
     {

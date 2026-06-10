@@ -1014,6 +1014,7 @@ GameObject:
   - component: {fileID: 1463158312}
   - component: {fileID: 1463158311}
   - component: {fileID: 1463158315}
+  - component: {fileID: 1463158316}
   - component: {fileID: 1463158309}
   - component: {fileID: 1463158310}
   - component: {fileID: 1463158314}
@@ -1230,6 +1231,23 @@ MonoBehaviour:
   UIOffset: {x: 0, y: -1.25}
   healthBar: {fileID: 125383546}
   health: {fileID: 1463158312}
+--- !u!114 &1463158316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463158307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b62c8aff32312c4785db1ea853b1bb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDrop
+  dropPrefab: {fileID: 6910583439835476194, guid: d160ff2b5a7bf1a4dbbe75a97f8983ee, type: 3}
+  possibleUpgradeTypes:
+  - {fileID: 11400000, guid: 2c4833d185a154242a580e6301ce9bba, type: 2}
+  - {fileID: 11400000, guid: a4821a21cf25d434487d74dec1ba52da, type: 2}
+  - {fileID: 11400000, guid: 07c0afbbca8e24f4f8417c1034be81c0, type: 2}
 --- !u!1 &1556191991
 GameObject:
   m_ObjectHideFlags: 0

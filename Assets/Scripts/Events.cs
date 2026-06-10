@@ -7,6 +7,7 @@ public static class Events
     public static event System.Action<float> ZoomCamera;
     public static event System.Action<UpgradeTypes, float> TriggerUpgrade;
     public static event System.Action<float> TriggerPlayerHealth;
+    public static event System.Action<float> TriggerPlayerAddHealth;
 
     public static void TriggerCameraShake(float magnitude)
     {
@@ -23,5 +24,9 @@ public static class Events
     public static void PlayerTakeDamage(float amount)
     {
         TriggerPlayerHealth?.Invoke(amount);
+    }
+    public static void PlayerAddHealth(float amount)
+    {
+        TriggerPlayerAddHealth?.Invoke(amount);
     }
 }

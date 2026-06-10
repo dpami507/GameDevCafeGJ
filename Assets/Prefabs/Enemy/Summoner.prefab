@@ -90,6 +90,7 @@ MonoBehaviour:
   possibleUpgradeTypes:
   - {fileID: 11400000, guid: 07c0afbbca8e24f4f8417c1034be81c0, type: 2}
   - {fileID: 11400000, guid: 34fcd910390c2db4fb64e37fb694c24d, type: 2}
+  - {fileID: 11400000, guid: 8503941d698443741b6a9ec0e9264dbd, type: 2}
 --- !u!114 &8865005184552001247
 MonoBehaviour:
   m_ObjectHideFlags: 0

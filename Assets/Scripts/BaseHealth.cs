@@ -20,7 +20,10 @@ public class BaseHealth : MonoBehaviour
     {
         currentHealth -= amount;
     }
-
+    public virtual void AddHealth(float amount)
+    {
+        currentHealth += amount;
+    }
     protected virtual void Die()
     {
         Destroy(this.gameObject);
