@@ -23,6 +23,7 @@ public class BaseHealth : MonoBehaviour
     public virtual void AddHealth(float amount)
     {
         currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
     }
     protected virtual void Die()
     {

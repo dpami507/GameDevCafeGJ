@@ -1,11 +1,18 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections.Generic;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [Header("Enemies")]
     [SerializeField] GameObject[] enemies;
     [SerializeField] int enemiesToSpawn;
     int enemiesSpawned;
+
+    [Header("Bosses")]
+    [SerializeField] GameObject[] bosses;
+
+    public List<GameObject> spawnedEntities = new List<GameObject>();
      
     public void SpawnEnemies(Tilemap tilemap)
     {
@@ -25,9 +32,41 @@ public class EnemySpawner : MonoBehaviour
             enemiesSpawned++;
         }
     }
-    void SpawnEnemy(Vector3Int pos)
+    GameObject SpawnEnemy(Vector3Int pos)
     {
         int index = Random.Range(0, enemies.Length);
-        Instantiate(enemies[index], pos, Quaternion.identity);
+        GameObject spawnedEnemy = Instantiate(enemies[index], pos, Quaternion.identity);
+
+        spawnedEntities.Add(spawnedEnemy);
+
+        return spawnedEnemy;
+    }
+
+    public GameObject SpawnBoss(Vector3 pos)
+    {
+        int index = Random.Range(0, bosses.Length);
+        GameObject spawnedBoss = Instantiate(bosses[index], pos, Quaternion.identity);
+
+        spawnedEntities.Add(spawnedBoss);
+
+        return spawnedBoss;
+    }
+    public void ClearEntities()
+    {
+        foreach(var entity in spawnedEntities)
+        {
+            Destroy(entity);
+        }
+        spawnedEntities.Clear();
+    }
+    public void ClearEntitiesInRadius(Vector2 center, float radius)
+    {
+        foreach (var entity in spawnedEntities)
+        {
+            if(Vector2.Distance(center, entity.transform.position) <= radius)
+            {
+                Destroy(entity);
+            }
+        }
     }
 }

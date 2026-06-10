@@ -23,13 +23,20 @@ public class Spike : MonoBehaviour
         this.damage = damage;
 
         rb.linearVelocity = transform.up * velocity;
+
+        Destroy(this.gameObject, 5f);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
             Events.PlayerTakeDamage(damage);
-            Destroy(this.gameObject);
         }
+        else if(collision.transform == this.transform)
+        {
+            return;
+        }
+
+        Destroy(this.gameObject);
     }
 }

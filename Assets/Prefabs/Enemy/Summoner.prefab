@@ -87,10 +87,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDrop
   dropPrefab: {fileID: 6910583439835476194, guid: d160ff2b5a7bf1a4dbbe75a97f8983ee, type: 3}
-  possibleUpgradeTypes:
-  - {fileID: 11400000, guid: 07c0afbbca8e24f4f8417c1034be81c0, type: 2}
-  - {fileID: 11400000, guid: 34fcd910390c2db4fb64e37fb694c24d, type: 2}
-  - {fileID: 11400000, guid: 8503941d698443741b6a9ec0e9264dbd, type: 2}
+  possibleDrops:
+  - chance: 100
+    drops:
+    - {fileID: 11400000, guid: 34fcd910390c2db4fb64e37fb694c24d, type: 2}
+    - {fileID: 11400000, guid: 07c0afbbca8e24f4f8417c1034be81c0, type: 2}
+    - {fileID: 11400000, guid: 8503941d698443741b6a9ec0e9264dbd, type: 2}
+  dropDist: 0
 --- !u!114 &8865005184552001247
 MonoBehaviour:
   m_ObjectHideFlags: 0

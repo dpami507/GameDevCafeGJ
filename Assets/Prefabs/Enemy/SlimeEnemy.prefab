@@ -87,12 +87,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   dropPrefab: {fileID: 6910583439835476194, guid: d160ff2b5a7bf1a4dbbe75a97f8983ee, type: 3}
-  possibleUpgradeTypes:
-  - {fileID: 11400000, guid: a4821a21cf25d434487d74dec1ba52da, type: 2}
-  - {fileID: 11400000, guid: 51a1426acf8dcaa42929cb37d5734e45, type: 2}
-  - {fileID: 11400000, guid: 346fe2416a3466a41b731a3fda4fa341, type: 2}
-  - {fileID: 11400000, guid: 58d931381f57f274d8dbbe1abec70573, type: 2}
-  - {fileID: 11400000, guid: 2a1b37f1e7c92f4439853d96d09c39cb, type: 2}
+  possibleDrops:
+  - chance: 100
+    drops:
+    - {fileID: 11400000, guid: 2a1b37f1e7c92f4439853d96d09c39cb, type: 2}
+    - {fileID: 11400000, guid: 58d931381f57f274d8dbbe1abec70573, type: 2}
+  dropDist: 0
 --- !u!114 &2575672303106917780
 MonoBehaviour:
   m_ObjectHideFlags: 0

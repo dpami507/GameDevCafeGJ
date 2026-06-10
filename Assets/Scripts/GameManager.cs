@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject dungenGenerationPrefab;
     DungeonGeneration generation;
     [SerializeField] GameObject playerPrefab;
+    GameObject player;
 
     [SerializeField] EnemySpawner spawner;
 
@@ -28,17 +29,39 @@ public class GameManager : MonoBehaviour
     {
         CreateLevel();
 
-        spawner.SpawnEnemies(generation.GetTilemap());
+        Events.TriggerGenerateNewLevel += CreateLevel;
     }
 
-    void CreateLevel()
+    public void CreateLevel()
     {
+        // clear all enemies
+        spawner.ClearEntities();
+
         // Create Level
-        GameObject dungeonGenerationGO = Instantiate(dungenGenerationPrefab, this.transform);
-        generation = dungeonGenerationGO.GetComponent<DungeonGeneration>();
+        if(generation == null)
+        {
+            GameObject dungeonGenerationGO = Instantiate(dungenGenerationPrefab, this.transform);
+            generation = dungeonGenerationGO.GetComponent<DungeonGeneration>();
+        }
         generation.Generate();
 
         // Create Player
-        GameObject playerGO = Instantiate (playerPrefab, generation.GetStartPos(), Quaternion.identity);
+        if (player == null)
+        {
+            player = Instantiate(playerPrefab, generation.GetStartPos(), Quaternion.identity);
+        }
+        else
+        {
+            player.transform.position = generation.GetStartPos();
+        }
+
+        // Spawn Enemies
+        spawner.SpawnEnemies(generation.GetTilemap());
+
+        // Clear Enemies near player
+        spawner.ClearEntitiesInRadius(player.transform.position, 5);
+
+        // Create Boss
+        GameObject bossGO = spawner.SpawnBoss(generation.GetEndPos());
     }
 }

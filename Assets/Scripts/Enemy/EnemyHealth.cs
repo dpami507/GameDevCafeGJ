@@ -36,9 +36,9 @@ public class EnemyHealth : BaseHealth
     void SpawnDamageIndicator(float amount)
     {
         float angle = Random.Range(0, 360);
-        float x = Mathf.Cos(angle * Mathf.Deg2Rad) + transform.position.x;
-        float y = Mathf.Sin(angle * Mathf.Deg2Rad) + transform.position.y;
-        Vector2 dmgIndicatorPos = new Vector2(x, y) * dmgIndicatorDistance;
+        float x = Mathf.Cos(angle * Mathf.Deg2Rad) * dmgIndicatorDistance;
+        float y = Mathf.Sin(angle * Mathf.Deg2Rad) * dmgIndicatorDistance;
+        Vector2 dmgIndicatorPos = new Vector2(x + transform.position.x, y + transform.position.y);
         GameObject dmgIndcGO = Instantiate(damageIndicatorPrefab, dmgIndicatorPos, Quaternion.identity);
         TMP_Text dmgTxt = dmgIndcGO.transform.GetComponentInChildren<TMP_Text>();
         dmgTxt.text = amount.ToString();

@@ -8,6 +8,7 @@ public static class Events
     public static event System.Action<UpgradeTypes, float> TriggerUpgrade;
     public static event System.Action<float> TriggerPlayerHealth;
     public static event System.Action<float> TriggerPlayerAddHealth;
+    public static event System.Action TriggerGenerateNewLevel;
 
     public static void TriggerCameraShake(float magnitude)
     {
@@ -28,5 +29,9 @@ public static class Events
     public static void PlayerAddHealth(float amount)
     {
         TriggerPlayerAddHealth?.Invoke(amount);
+    }
+    public static void GenerateNewLevel()
+    {
+        TriggerGenerateNewLevel?.Invoke();
     }
 }

@@ -29,7 +29,6 @@ public class DungeonGeneration : MonoBehaviour
     List<Edge> roomEdges = new List<Edge>();
 
     [Header("Room Settings")]
-    [SerializeField] GameObject roomPrefab;
     [SerializeField] int maxRoomSize;
     [SerializeField] int minRoomSize;
     [SerializeField] int roomGap;
@@ -51,6 +50,8 @@ public class DungeonGeneration : MonoBehaviour
     Room endRoom;
     public void Generate()
     {
+        Cleanup();
+
         GenerateSections();
         GenerateRooms();
         DelaunayTriangulation();
@@ -58,7 +59,21 @@ public class DungeonGeneration : MonoBehaviour
         GenerateTilemap();
         FindSpecialRooms();
     }
+    void Cleanup()
+    {
+        startRoom = null;   
+        endRoom = null;
+
+        floorTilemap.ClearAllTiles();
+        wallTilemap.ClearAllTiles();
+
+        roomEdges.Clear();
+        triangles.Clear();
+        rooms.Clear();
+        sections.Clear();
+    }
     public Vector2 GetStartPos() => startRoom.position;
+    public Vector3 GetEndPos() => endRoom.position;
     public Tilemap GetTilemap() => floorTilemap;
     public Vector2 GetDungeonSize() => new Vector2(mapWidth, mapHeight);
     void GenerateSections()
