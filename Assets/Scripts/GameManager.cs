@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class GameManager : MonoBehaviour
     GameObject player;
 
     [SerializeField] EnemySpawner spawner;
+
+    [Header("Gameplay Stats")]
+    [SerializeField] int currentFloor;
 
     public static GameManager instance;
 
@@ -27,11 +31,16 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        CreateLevel();
+        StartGame();
 
         Events.TriggerGenerateNewLevel += CreateLevel;
     }
-
+    void StartGame()
+    {
+        currentFloor = 10;
+        CreateLevel();
+    }
+    public float GetDificultyMultiplier() => 1 + Mathf.Pow(currentFloor, 2) / 10f;
     public void CreateLevel()
     {
         // clear all enemies

@@ -6,6 +6,8 @@ public class PlayerHealth : BaseHealth
     {
         Events.TriggerPlayerHealth += TakeDamage;
         Events.TriggerPlayerAddHealth += AddHealth;
+
+        SetupHealth();
     }
     public override void TakeDamage(float amount)
     {

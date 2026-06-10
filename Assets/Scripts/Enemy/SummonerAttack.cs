@@ -20,6 +20,11 @@ public class SummonerAttack : EnemyBaseAttack
 
         lastAttacked = 0;
     }
+    public override void UpdateStats()
+    {
+        base.UpdateStats();
+        spikeCount = Mathf.RoundToInt(spikeCount + GameManager.instance.GetDificultyMultiplier());
+    }
     IEnumerator CreateSpikes()
     {
         for (int i = 0; i < spikeCount; i++) {

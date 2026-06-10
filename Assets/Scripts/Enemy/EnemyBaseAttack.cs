@@ -10,6 +10,11 @@ public class EnemyBaseAttack : MonoBehaviour
 
     protected Transform target;
 
+    private void Start()
+    {
+        UpdateStats();
+    }
+
     public virtual void TryAttack(Transform target)
     {
         this.target = target;
@@ -24,6 +29,11 @@ public class EnemyBaseAttack : MonoBehaviour
                 lastAttacked = 0;
             }
         }
+    }
+    public virtual void UpdateStats()
+    {
+        damage = Mathf.RoundToInt(damage * GameManager.instance.GetDificultyMultiplier());
+        attackCooldown = attackCooldown / GameManager.instance.GetDificultyMultiplier();
     }
     protected bool CanAttack()
     {

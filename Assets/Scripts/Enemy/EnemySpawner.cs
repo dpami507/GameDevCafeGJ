@@ -13,9 +13,11 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] GameObject[] bosses;
 
     public List<GameObject> spawnedEntities = new List<GameObject>();
-     
+
     public void SpawnEnemies(Tilemap tilemap)
     {
+        enemiesToSpawn = Mathf.RoundToInt(enemiesToSpawn * GameManager.instance.GetDificultyMultiplier());
+
         int minX = tilemap.cellBounds.xMin;
         int minY = tilemap.cellBounds.yMin;
         int maxX = tilemap.cellBounds.xMax;

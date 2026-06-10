@@ -15,6 +15,12 @@ public class EnemyHealth : BaseHealth
     private void Start()
     {
         originalColor = spriteRenderer.color;
+        SetupHealth();
+    }
+    public override void SetupHealth()
+    {
+        maxHealth = Mathf.RoundToInt(maxHealth * GameManager.instance.GetDificultyMultiplier());
+        currentHealth = maxHealth;
     }
 
     public override void TakeDamage(float amount)

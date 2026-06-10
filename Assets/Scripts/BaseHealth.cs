@@ -5,7 +5,11 @@ public class BaseHealth : MonoBehaviour
     [SerializeField] protected float currentHealth;
     [SerializeField] protected int maxHealth;
 
-    private void Awake()
+    private void Start()
+    {
+        SetupHealth();
+    }
+    public virtual void SetupHealth()
     {
         currentHealth = maxHealth;
     }
