@@ -10,6 +10,13 @@ public class EnemyHealth : BaseHealth
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] float vanishTime;
 
+    Color originalColor;
+
+    private void Start()
+    {
+        originalColor = spriteRenderer.color;
+    }
+
     public override void TakeDamage(float amount)
     {
         SpawnDamageIndicator(amount);
@@ -40,7 +47,6 @@ public class EnemyHealth : BaseHealth
     }
     IEnumerator HitFeedback()
     {
-        Color originalColor = spriteRenderer.color;
         spriteRenderer.color = Color.red;
 
         yield return new WaitForSeconds(vanishTime);

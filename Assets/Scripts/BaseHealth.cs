@@ -25,4 +25,5 @@ public class BaseHealth : MonoBehaviour
     {
         Destroy(this.gameObject);
     }
+    public float GetHealthAsPercentage() => currentHealth / maxHealth;
 }
