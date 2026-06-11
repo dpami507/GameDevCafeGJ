@@ -13,7 +13,7 @@ public class BaseHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
     }
-    private void Update()
+    public virtual void Update()
     {
         if (currentHealth <= 0)
         {

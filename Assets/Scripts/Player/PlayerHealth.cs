@@ -2,12 +2,22 @@ using UnityEngine;
 
 public class PlayerHealth : BaseHealth
 {
+    float originalMaxHealth;
     private void Start()
     {
         Events.TriggerPlayerHealth += TakeDamage;
         Events.TriggerPlayerAddHealth += AddHealth;
 
         SetupHealth();
+        originalMaxHealth = maxHealth;
+    }
+    public override void Update()
+    {
+        maxHealth = (int)(originalMaxHealth * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.MaxHealth));
+        if(currentHealth <= 0)
+        {
+            Die();
+        }    
     }
     public override void TakeDamage(float amount)
     {

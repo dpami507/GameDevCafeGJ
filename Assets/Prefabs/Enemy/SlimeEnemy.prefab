@@ -92,6 +92,7 @@ MonoBehaviour:
     drops:
     - {fileID: 11400000, guid: 2a1b37f1e7c92f4439853d96d09c39cb, type: 2}
     - {fileID: 11400000, guid: 58d931381f57f274d8dbbe1abec70573, type: 2}
+    - {fileID: 11400000, guid: f8200ee534c6de1478e5b04c6955874b, type: 2}
   dropDist: 0
 --- !u!114 &2575672303106917780
 MonoBehaviour:

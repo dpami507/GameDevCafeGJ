@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 910dfa53300f8e9458f8032fcbc03ab7, type: 3}
   m_Name: SmallHealth
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeSO
-  type: 7
+  type: 8
   sprite: {fileID: 8274123707902817099, guid: 0a50daa2dbc2d7641a9164837320b2f3, type: 3}
   increaseAmount: 3

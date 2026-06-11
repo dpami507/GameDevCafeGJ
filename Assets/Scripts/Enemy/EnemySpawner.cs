@@ -8,15 +8,22 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] GameObject[] enemies;
     [SerializeField] int enemiesToSpawn;
     int enemiesSpawned;
+    int originalEnemiesToSpawn;
 
     [Header("Bosses")]
     [SerializeField] GameObject[] bosses;
 
     public List<GameObject> spawnedEntities = new List<GameObject>();
 
+    private void Awake()
+    {
+        originalEnemiesToSpawn = enemiesToSpawn;
+    }
     public void SpawnEnemies(Tilemap tilemap)
     {
-        enemiesToSpawn = Mathf.RoundToInt(enemiesToSpawn * GameManager.instance.GetDificultyMultiplier());
+        enemiesSpawned = 0;
+        enemiesToSpawn = Mathf.RoundToInt(originalEnemiesToSpawn * (((GameManager.instance.GetDificultyMultiplier() - 1) / 2.0f) + 1));
+        Debug.Log($"Spawning Enemies {enemiesToSpawn}, {originalEnemiesToSpawn} * {GameManager.instance.GetDificultyMultiplier()}");
 
         int minX = tilemap.cellBounds.xMin;
         int minY = tilemap.cellBounds.yMin;

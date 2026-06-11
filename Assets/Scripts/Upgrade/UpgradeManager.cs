@@ -11,6 +11,7 @@ public enum UpgradeTypes
     AttackSize,
     ChargeSpeed,
     MaxCharge,
+    MaxHealth,
 
     Health,
     Ladder
@@ -43,7 +44,7 @@ public class UpgradeManager : MonoBehaviour
 
         if(id == UpgradeTypes.Health)
         {
-            Events.PlayerAddHealth(amount);
+            Events.PlayerAddHealth(amount * GameManager.instance.GetDificultyMultiplier());
         }
         else if(id == UpgradeTypes.Ladder)
         {
