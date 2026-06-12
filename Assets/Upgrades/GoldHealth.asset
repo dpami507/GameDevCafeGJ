@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeSO
   type: 8
   sprite: {fileID: -8665987865193761129, guid: 0a50daa2dbc2d7641a9164837320b2f3, type: 3}
-  increaseAmount: 10
+  increaseAmount: 20
