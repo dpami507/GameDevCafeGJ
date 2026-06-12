@@ -34,7 +34,9 @@ public class PlayerHealth : BaseHealth
     protected override void Die()
     {
         //base.Die();
+        if (GameManager.instance.gameOver) return;
         Debug.Log("Player Died");
+        GameManager.instance.GameOver();
         ApplicationManager.instance.PlaySound("playerdie");
     }
 }

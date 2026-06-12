@@ -59,7 +59,7 @@ public class DungeonGeneration : MonoBehaviour
         GenerateTilemap();
         FindSpecialRooms();
     }
-    void Cleanup()
+    public void Cleanup()
     {
         startRoom = null;   
         endRoom = null;

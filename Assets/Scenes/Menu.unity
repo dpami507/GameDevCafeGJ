@@ -1694,7 +1694,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Re-color \nwizard"
+  m_text: Game Title
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 805943449d284f845b3c3b2949568354, type: 2}
   m_sharedMaterial: {fileID: -7378962295156303056, guid: 805943449d284f845b3c3b2949568354, type: 2}

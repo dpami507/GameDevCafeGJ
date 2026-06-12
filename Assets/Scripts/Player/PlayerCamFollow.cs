@@ -25,8 +25,6 @@ public class PlayerCamFollow : MonoBehaviour
     Vector3 vel = Vector3.zero;
     Camera cam;
 
-    InputAction playerAction;
-
     private void Start()
     {
         Events.ShakeCamera += Shake;
@@ -35,8 +33,12 @@ public class PlayerCamFollow : MonoBehaviour
         cam = GetComponent<Camera>();
         initZoomAmount = cam.orthographicSize;
 
-        playerAction = InputSystem.actions.FindAction("Jump");
         lastShook = Time.time;
+    }
+    private void OnDestroy()
+    {
+        Events.ShakeCamera -= Shake;
+        Events.ZoomCamera -= SetZoom;
     }
 
     private void FixedUpdate()
@@ -53,20 +55,10 @@ public class PlayerCamFollow : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, shakeLerpTime * Time.deltaTime);
         cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, initZoomAmount, zoomLerpTime * Time.deltaTime);
     }
-    private void Update()
-    {
-        lastShook += Time.deltaTime;
-        if(playerAction.IsPressed())
-        {
-            if (lastShook > shakeCooldown) return;
-
-            Shake(1f);
-        }
-    }
     public void Shake(float magnitude = 1)
     {
         int shakeDir = (Random.value > 0.5) ? 1 : -1;
-        transform.rotation = Quaternion.Euler(0, 0, shakeAngleAmount * shakeDir * magnitude);
+        this.transform.rotation = Quaternion.Euler(0, 0, shakeAngleAmount * shakeDir * magnitude);
 
         lastShook = 0;
     }

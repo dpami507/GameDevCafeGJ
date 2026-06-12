@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using TMPro;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,10 +21,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] TMP_Text timer;
     [SerializeField] TMP_Text level;
     [SerializeField] TMP_Text difficulty;
+    [SerializeField] GameObject pauseMenu;
+    [SerializeField] GameObject gameOverMenu;
 
+    public bool gameRunning;
+    public bool gameOver;
 
     public static GameManager instance;
 
+    InputAction pauseAction;
     public DungeonGeneration GetDungeon() => generation;
     public void SetTileToColor(Vector3Int pos, Color color) => generation.GetTilemap().SetColor(pos, color);
 
@@ -30,7 +38,6 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this.gameObject);
         }
         else
             Destroy(this.gameObject);
@@ -39,8 +46,12 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         StartGame();
+        gameRunning = true;
+        gameOver = false;
 
         Events.TriggerGenerateNewLevel += CreateLevel;
+
+        pauseAction = InputSystem.actions.FindAction("Pause");
     }
     void StartGame()
     {
@@ -51,12 +62,33 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         UpdateUI();
+
+        if (pauseAction.IsPressed())
+        {
+            Pause();
+        }
     }
     void UpdateUI()
     {
         timer.text = GetPlayTime();
         level.text = "Lvl: " + currentFloor.ToString();
         difficulty.text = "x" + GetDificultyMultiplier().ToString("0.0");
+    }
+    public void Pause()
+    {
+        gameRunning = false;
+        pauseMenu.SetActive(true);
+    }
+    public void Unpause()
+    {
+        gameRunning = true;
+        pauseMenu.SetActive(false);
+    }
+    public void GameOver()
+    {
+        gameRunning = false;
+        gameOverMenu.SetActive(true);
+        gameOver = true;
     }
     string GetPlayTime()
     {
@@ -66,12 +98,17 @@ public class GameManager : MonoBehaviour
 
         return $"{minutes.ToString("00")}:{seconds.ToString("00")}";
     }
+    public void ClearLevel()
+    {
+        // clear all enemies
+        spawner?.ClearEntities();
+        generation?.Cleanup();
+    }
     public void CreateLevel()
     {
         currentFloor++;
 
-        // clear all enemies
-        spawner.ClearEntities();
+        ClearLevel();
 
         // Create Level
         if(generation == null)
