@@ -119,6 +119,70 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &93360038
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 93360040}
+  - component: {fileID: 93360039}
+  m_Layer: 0
+  m_Name: ApplicationManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &93360039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 93360038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87975efa7a61eed43b0bd9b38c7bb407, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  sounds:
+  - id: enemydie
+    clip: {fileID: 8300000, guid: 96c23420431429f47a30ccf4dfb991b9, type: 3}
+    volume: 1
+  - id: enemyhit
+    clip: {fileID: 8300000, guid: aa14e47abb9551b4bbfd75873284a180, type: 3}
+    volume: 1
+  - id: playerdie
+    clip: {fileID: 8300000, guid: 0fb10dff9f426df4cbf5cdc5f3d35d3a, type: 3}
+    volume: 1
+  - id: playerhit
+    clip: {fileID: 8300000, guid: 75e8d801f6fbc84489ed0ced774a216b, type: 3}
+    volume: 1
+  - id: shoot
+    clip: {fileID: 8300000, guid: d1ec29de96e5252488a7c7bc6152c697, type: 3}
+    volume: 1
+  - id: spikeshoot
+    clip: {fileID: 8300000, guid: 06d83f86be1a6bd489b09c63d8f09860, type: 3}
+    volume: 1
+  volume: 1
+--- !u!4 &93360040
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 93360038}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 40.98233, y: 21.0361, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &114069681
 GameObject:
   m_ObjectHideFlags: 0
@@ -1242,7 +1306,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 2
 --- !u!222 &403592245
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1630,7 +1694,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Game Title
+  m_text: "Re-color \nwizard"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 805943449d284f845b3c3b2949568354, type: 2}
   m_sharedMaterial: {fileID: -7378962295156303056, guid: 805943449d284f845b3c3b2949568354, type: 2}
@@ -3323,7 +3387,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 2
 --- !u!222 &962184344
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4812,7 +4876,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 2
 --- !u!222 &1609722943
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6155,3 +6219,4 @@ SceneRoots:
   - {fileID: 1234253129}
   - {fileID: 427646566}
   - {fileID: 2138549789}
+  - {fileID: 93360040}

@@ -84,6 +84,7 @@ public class PlayerWeapon : MonoBehaviour
         if (playerAction.WasReleasedThisFrame())
         {
             Debug.Log("Shoot");
+            ApplicationManager.instance.PlaySound("shoot");
 
             chargeParticles.Stop();
             chargeParticles.Clear();
