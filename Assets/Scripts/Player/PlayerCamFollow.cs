@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Camera))]
 public class PlayerCamFollow : MonoBehaviour

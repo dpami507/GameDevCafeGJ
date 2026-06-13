@@ -1,9 +1,6 @@
 using UnityEngine;
-using UnityEngine.Rendering;
 using TMPro;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
-using UnityEngine.Experimental.GlobalIllumination;
 
 public class GameManager : MonoBehaviour
 {
