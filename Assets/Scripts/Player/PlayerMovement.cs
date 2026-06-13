@@ -32,6 +32,9 @@ public class PlayerMovement : MonoBehaviour
         playerMoveInput = playerAction.ReadValue<Vector2>();
         rb.linearVelocity = playerMoveInput.normalized * movementSpeed * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.MovementSpeed);
 
+        if (GameManager.instance.gameOver)
+            rb.linearVelocity = Vector2.zero;
+
         // Get direction and hold if not moving
         if(Mathf.Abs(playerMoveInput.x) > 0.05f)
             dir = playerMoveInput;

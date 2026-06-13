@@ -24,6 +24,10 @@ public class ApplicationManager : MonoBehaviour
     {
         Events.TriggerSound += PlaySound;
     }
+    private void OnDestroy()
+    {
+        Events.TriggerSound -= PlaySound;
+    }
     void PlaySound(string id)
     {
         foreach (var sound in sounds)

@@ -11,6 +11,11 @@ public class PlayerHealth : BaseHealth
         SetupHealth();
         originalMaxHealth = maxHealth;
     }
+    private void OnDestroy()
+    {
+        Events.TriggerPlayerHealth -= TakeDamage;
+        Events.TriggerPlayerAddHealth -= AddHealth;
+    }
     public override void Update()
     {
         maxHealth = (int)(originalMaxHealth * UpgradeManager.instance.GetUpgradeValue(UpgradeTypes.MaxHealth));

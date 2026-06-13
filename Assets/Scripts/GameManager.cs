@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Gameplay Stats")]
     [SerializeField] int currentFloor;
+    float timePlayed;
 
     [Header("Gameplay UI")]
     [SerializeField] TMP_Text timer;
@@ -72,12 +73,15 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         currentFloor = 0;
+        timePlayed = 0;
         CreateLevel();
     }
     public float GetDificultyMultiplier() => 1 + Mathf.Pow(currentFloor, 2) / 10f - (1 / 10f);
     private void Update()
     {
         UpdateUI();
+        if (!GameManager.instance.gameOver)
+            timePlayed += Time.deltaTime;
 
         if (pauseAction.IsPressed())
         {
@@ -108,7 +112,7 @@ public class GameManager : MonoBehaviour
     }
     string GetPlayTime()
     {
-        float time = Time.time;
+        float time = timePlayed;
         int minutes = (int)time / 60;
         int seconds = (int)time % 60;
 

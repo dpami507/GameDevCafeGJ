@@ -19,6 +19,7 @@ public class UpgradePickup : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
+            Debug.Log($"Collided With: {collision.name}");
             Events.IncreaseUpgrade(upgradeType.type, upgradeType.increaseAmount);
             Destroy(this.gameObject);
         }

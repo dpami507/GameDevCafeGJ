@@ -29,6 +29,10 @@ public class UpgradeManager : MonoBehaviour
 
         Events.TriggerUpgrade += TriggerUpgrade;
     }
+    private void OnDestroy()
+    {
+        Events.TriggerUpgrade -= TriggerUpgrade;
+    }
     void CreateInstance()
     {
         // Set up instance

@@ -21,6 +21,7 @@ public static class Events
     }
     public static void IncreaseUpgrade(UpgradeTypes id, float amount)
     {
+        Debug.Log("Increasing Upgrade");
         TriggerUpgrade?.Invoke(id, amount);
     }
     public static void PlayerTakeDamage(float amount)

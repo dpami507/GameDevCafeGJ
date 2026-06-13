@@ -37,6 +37,7 @@ public class EnemyMovement : MonoBehaviour
         }
         if (GameManager.instance.gameOver)
         {
+            rb.linearVelocity = Vector2.zero;
             return;
         }
 
