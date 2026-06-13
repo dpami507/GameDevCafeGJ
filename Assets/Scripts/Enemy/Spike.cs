@@ -23,7 +23,7 @@ public class Spike : MonoBehaviour
         this.damage = damage;
 
         rb.linearVelocity = transform.up * velocity;
-        ApplicationManager.instance.PlaySound("spikeshoot");
+        Events.PlaySound("spikeshoot");
 
         Destroy(this.gameObject, 5f);
     }

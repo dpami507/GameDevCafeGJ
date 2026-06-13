@@ -73,6 +73,8 @@ public class PlayerWeapon : MonoBehaviour
         if (playerShooting)
         {
             Debug.Log("Charging");
+            if(chargeParticles.isPlaying == false)
+                chargeParticles.Play();
 
             currentCharge += GetChargeSpeed() * Time.deltaTime;
             currentCharge = Mathf.Clamp(currentCharge, minCharge, GetMaxShotSize());
@@ -84,7 +86,7 @@ public class PlayerWeapon : MonoBehaviour
         if (playerAction.WasReleasedThisFrame())
         {
             Debug.Log("Shoot");
-            ApplicationManager.instance.PlaySound("shoot");
+            Events.PlaySound("shoot");
 
             chargeParticles.Stop();
             chargeParticles.Clear();

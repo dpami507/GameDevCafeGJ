@@ -43,6 +43,8 @@ public class EnemyBaseAttack : MonoBehaviour
         float dist = Vector2.Distance(transform.position, target.position);
         if (dist > attackDistance) return false;
 
+        if(GameManager.instance.gameOver) return false;
+
         return true;
     }
 }

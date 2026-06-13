@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1258176126193983340}
   - component: {fileID: 490184716222839455}
   - component: {fileID: 4793673177241152344}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SlimeEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,6 +53,8 @@ MonoBehaviour:
   movementSpeed: 1
   stopDistance: 1
   maxDistance: 10
+  shouldRotate: 0
+  bodyToRotate: {fileID: 0}
   shouldRunaway: 0
   runAwayDistance: 0
   attack: {fileID: 2575672303106917780}
@@ -106,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a841c4db7ca71974da5580573f8ec56f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBaseAttack
-  attackDistance: 1
+  attackDistance: 2
   damage: 1
   attackCooldown: 1
 --- !u!212 &1258176126193983340

@@ -8,6 +8,10 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] float stopDistance;
     [SerializeField] float maxDistance;
 
+    [Header("Rotate")]
+    [SerializeField] bool shouldRotate;
+    [SerializeField] Transform bodyToRotate;
+
     [Header("Runaway")]
     [SerializeField] bool shouldRunaway;
     [SerializeField] float runAwayDistance;
@@ -31,11 +35,16 @@ public class EnemyMovement : MonoBehaviour
             target = FindFirstObjectByType<PlayerMovement>()?.transform;
             return;
         }
+        if (GameManager.instance.gameOver)
+        {
+            return;
+        }
 
         float dist = Vector2.Distance(target.position, transform.position);
         
         Move(dist);
         attack.TryAttack(target);
+        Rotate();
     }
     void Move(float dist)
     {
@@ -53,6 +62,15 @@ public class EnemyMovement : MonoBehaviour
         else
         {
             rb.linearVelocity = Vector2.zero;
+        }
+    }
+    void Rotate()
+    {
+        if (shouldRotate && target)
+        {
+            Vector2 dir = target.position - transform.position;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            bodyToRotate.rotation = Quaternion.Euler(0, 0, angle);
         }
     }
 }

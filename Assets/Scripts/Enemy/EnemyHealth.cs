@@ -29,7 +29,7 @@ public class EnemyHealth : BaseHealth
         StartCoroutine(nameof(HitFeedback));
 
         base.TakeDamage(amount);
-        ApplicationManager.instance.PlaySound("enemyhit");
+        Events.PlaySound("enemyhit");
     }
     protected override void Die()
     {
@@ -39,7 +39,7 @@ public class EnemyHealth : BaseHealth
         {
             enemyDrop.Drop();
         }
-        ApplicationManager.instance.PlaySound("enemydie");
+        Events.PlaySound("enemydie");
     }
     void SpawnDamageIndicator(float amount)
     {

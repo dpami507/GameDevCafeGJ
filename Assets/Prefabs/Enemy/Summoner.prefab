@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4442756221597539679}
   - component: {fileID: 7397439691542894360}
   - component: {fileID: 7184098146218729964}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Summoner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,6 +53,8 @@ MonoBehaviour:
   movementSpeed: 1
   stopDistance: 5
   maxDistance: 10
+  shouldRotate: 0
+  bodyToRotate: {fileID: 0}
   shouldRunaway: 1
   runAwayDistance: 4
   attack: {fileID: 8865005184552001247}

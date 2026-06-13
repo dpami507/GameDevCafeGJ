@@ -7,13 +7,13 @@ public class ApplicationManager : MonoBehaviour
     [Header("Sound")]
     [SerializeField] Sound[] sounds;
     [SerializeField] float volume;
-    public static event System.Action<string> TriggerPlaySound;
 
     private void Awake()
     {
         if(instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(this.gameObject);
         }
         else
         {
@@ -22,9 +22,9 @@ public class ApplicationManager : MonoBehaviour
     }
     private void Start()
     {
-        TriggerPlaySound += PlaySound;
+        Events.TriggerSound += PlaySound;
     }
-    public void PlaySound(string id)
+    void PlaySound(string id)
     {
         foreach (var sound in sounds)
         {

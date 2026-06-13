@@ -25,7 +25,7 @@ public class PlayerHealth : BaseHealth
         Debug.Log($"Player Took Damage! -{amount}, {currentHealth}/{maxHealth}");
 
         Events.TriggerCameraShake(1f);
-        ApplicationManager.instance.PlaySound("playerhit");
+        Events.PlaySound("playerhit");
     }
     public override void AddHealth(float amount)
     {
@@ -37,6 +37,6 @@ public class PlayerHealth : BaseHealth
         if (GameManager.instance.gameOver) return;
         Debug.Log("Player Died");
         GameManager.instance.GameOver();
-        ApplicationManager.instance.PlaySound("playerdie");
+        Events.PlaySound("playerdie");
     }
 }

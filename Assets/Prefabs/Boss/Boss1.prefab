@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8531885111727051859}
   - component: {fileID: 1284421032572725127}
   - component: {fileID: 8133568479064470259}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 2002406985921349318}
   - component: {fileID: 6575312994640255844}
   - component: {fileID: 1207946409968317556}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: enemyUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   - component: {fileID: 6236619252858785188}
   - component: {fileID: 2449350564388472563}
   - component: {fileID: 4691441832586810199}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Boss1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -232,6 +232,8 @@ MonoBehaviour:
   movementSpeed: 1
   stopDistance: 2
   maxDistance: 10
+  shouldRotate: 0
+  bodyToRotate: {fileID: 0}
   shouldRunaway: 0
   runAwayDistance: 0
   attack: {fileID: 6566804798757529112}
@@ -444,7 +446,7 @@ GameObject:
   - component: {fileID: 7100988075561628217}
   - component: {fileID: 8880492414045874900}
   - component: {fileID: 418352505586352281}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -9,6 +9,7 @@ public static class Events
     public static event System.Action<float> TriggerPlayerHealth;
     public static event System.Action<float> TriggerPlayerAddHealth;
     public static event System.Action TriggerGenerateNewLevel;
+    public static event System.Action<string> TriggerSound;
 
     public static void TriggerCameraShake(float magnitude)
     {
@@ -33,5 +34,9 @@ public static class Events
     public static void GenerateNewLevel()
     {
         TriggerGenerateNewLevel?.Invoke();
+    }
+    public static void PlaySound(string id)
+    {
+        TriggerSound?.Invoke(id);
     }
 }

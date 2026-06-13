@@ -41,8 +41,9 @@ public class UpgradeManager : MonoBehaviour
     void TriggerUpgrade(UpgradeTypes id, float amount)
     {
         if (upgradeList.Count <= 0) return;
+        Events.PlaySound("upgrade");
 
-        if(id == UpgradeTypes.Health)
+        if (id == UpgradeTypes.Health)
         {
             Events.PlayerAddHealth(amount * GameManager.instance.GetDificultyMultiplier());
         }
