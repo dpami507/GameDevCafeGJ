@@ -35,12 +35,27 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
+        if (instance != null && instance != this)
         {
-            instance = this;
-        }
-        else
             Destroy(this.gameObject);
+            return;
+        }
+
+        instance = this;
+    }
+    private void OnDestroy()
+    {
+        Events.TriggerGenerateNewLevel -= CreateLevel;
+
+        instance = null;
+        if (spawner != null && spawner.gameObject != null)
+            Destroy(spawner.gameObject);
+
+        if (generation != null && generation.gameObject != null)
+            Destroy(generation.gameObject);
+
+        if (player != null)
+            Destroy(player);
     }
 
     void Start()
@@ -49,6 +64,7 @@ public class GameManager : MonoBehaviour
         gameRunning = true;
         gameOver = false;
 
+        Events.TriggerGenerateNewLevel -= CreateLevel;
         Events.TriggerGenerateNewLevel += CreateLevel;
 
         pauseAction = InputSystem.actions.FindAction("Pause");
@@ -98,22 +114,14 @@ public class GameManager : MonoBehaviour
 
         return $"{minutes.ToString("00")}:{seconds.ToString("00")}";
     }
-    public void ClearLevel()
-    {
-        // clear all enemies
-        spawner?.ClearEntities();
-        generation?.Cleanup();
-    }
     public void CreateLevel()
     {
         currentFloor++;
 
-        ClearLevel();
-
         // Create Level
         if(generation == null)
         {
-            GameObject dungeonGenerationGO = Instantiate(dungenGenerationPrefab, this.transform);
+            GameObject dungeonGenerationGO = Instantiate(dungenGenerationPrefab, instance.transform);
             generation = dungeonGenerationGO.GetComponent<DungeonGeneration>();
         }
         generation.Generate();
@@ -129,12 +137,15 @@ public class GameManager : MonoBehaviour
         }
 
         // Spawn Enemies
-        spawner.SpawnEnemies(generation.GetTilemap());
+        if (spawner != null)
+            spawner.SpawnEnemies(generation.GetTilemap());
 
         // Clear Enemies near player
-        spawner.ClearEntitiesInRadius(player.transform.position, 5);
+        if (spawner != null && player != null)
+            spawner.ClearEntitiesInRadius(player.transform.position, 5);
 
         // Create Boss
-        GameObject bossGO = spawner.SpawnBoss(generation.GetEndPos());
+        if (spawner != null)
+            spawner.SpawnBoss(generation.GetEndPos());
     }
 }

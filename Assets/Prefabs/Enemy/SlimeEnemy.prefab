@@ -71,7 +71,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   currentHealth: 0
-  maxHealth: 10
+  maxHealth: 5
   damageIndicatorPrefab: {fileID: 8782399057143777837, guid: 8507f68a9fb3f364e8e7d5e2cbb7b10e, type: 3}
   dmgIndicatorDistance: 1
   spriteRenderer: {fileID: 1258176126193983340}

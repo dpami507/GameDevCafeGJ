@@ -21,9 +21,10 @@ public class EnemySpawner : MonoBehaviour
     }
     public void SpawnEnemies(Tilemap tilemap)
     {
+        ClearEntities();
+
         enemiesSpawned = 0;
         enemiesToSpawn = Mathf.RoundToInt(originalEnemiesToSpawn * (((GameManager.instance.GetDificultyMultiplier() - 1) / 2.0f) + 1));
-        Debug.Log($"Spawning Enemies {enemiesToSpawn}, {originalEnemiesToSpawn} * {GameManager.instance.GetDificultyMultiplier()}");
 
         int minX = tilemap.cellBounds.xMin;
         int minY = tilemap.cellBounds.yMin;
